@@ -1,0 +1,81 @@
+---
+import '../styles/global.css';
+import { site, url } from '../site';
+import SoundWaves from '../components/SoundWaves.astro';
+
+interface Props { title?: string; description?: string }
+const { title, description = site.description } = Astro.props;
+const fullTitle = title ? `${title} | ${site.name}` : `${site.name} | ${site.role}`;
+const path = Astro.url.pathname;
+const nav = [
+  { href: url('/'), label: 'Home' },
+  { href: url('/#work'), label: 'Work' },
+  { href: url('/about/'), label: 'About' },
+  { href: url('/resume/'), label: 'Résumé' },
+];
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#151413" />
+    <link rel="icon" href={url('/favicon.svg')} type="image/svg+xml" />
+  </head>
+  <body>
+    <SoundWaves />
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="site-header">
+      <div class="container bar">
+        <a href={url('/')} class="wordmark" aria-current={path === url('/') ? 'page' : undefined}>{site.name}</a>
+        <nav aria-label="Main">
+          <ul>
+            {nav.slice(1).map((item) => (
+              <li>
+                <a href={item.href} aria-current={path === item.href ? 'page' : undefined}>{item.label}</a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      </div>
+    </header>
+    <main id="main">
+      <slot />
+    </main>
+    <footer class="site-footer">
+      <div class="container">
+        <p class="cta"><a href={`mailto:${site.email}`}>Email me</a></p>
+        <div class="foot-row mono">
+          <span>© {new Date().getFullYear()} {site.name}</span>
+          <span>{site.linkedin ? <a href={site.linkedin}>LinkedIn</a> : site.location}</span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
+
+<style>
+  .site-header { position: sticky; top: 0; z-index: 20; background: var(--bg); border-bottom: var(--rule); }
+  .bar { display: flex; align-items: center; justify-content: space-between; gap: 1rem; min-height: 3.25rem; }
+  .wordmark { font-family: var(--font-display); font-weight: 800; letter-spacing: -0.03em; color: var(--text); text-decoration: none; font-size: 1.05rem; }
+  .site-header ul { list-style: none; display: flex; margin: 0; padding: 0; font-family: var(--font-mono); font-size: 0.8rem; }
+  .site-header li a { display: block; padding: 0.95rem 0.9rem; color: var(--text); text-decoration: none; border-left: var(--rule); }
+  .site-header li:last-child a { border-right: var(--rule); }
+  .site-header li a:hover { background: var(--text); color: var(--bg); }
+  .site-header a[aria-current='page'] { background: var(--accent); color: var(--accent-ink); }
+  .site-header .wordmark[aria-current='page'] { background: none; color: var(--text); }
+  @media (max-width: 520px) {
+    .wordmark { font-size: 0.95rem; }
+    .site-header li a { padding-inline: 0.6rem; }
+  }
+
+  .site-footer { margin-top: clamp(5rem, 12vw, 9rem); background: var(--grad-red); color: var(--accent-ink); border-top: var(--rule); }
+  .cta { margin: 0; padding: clamp(2.5rem, 7vw, 5rem) 0 clamp(1.5rem, 4vw, 3rem); }
+  .cta a { font-family: var(--font-display); font-weight: 800; font-size: clamp(3.5rem, 14vw, 11rem); letter-spacing: -0.055em; line-height: 0.88; color: var(--accent-ink); text-decoration: none; }
+  .cta a:hover { text-decoration: underline; text-decoration-thickness: 0.06em; text-underline-offset: 0.08em; }
+  .foot-row { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 1rem; padding: 1.25rem 0 1.5rem; border-top: 2px solid var(--accent-ink); }
+  .foot-row a { color: var(--accent-ink); }
+</style>

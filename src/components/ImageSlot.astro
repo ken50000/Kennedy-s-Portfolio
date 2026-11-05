@@ -1,0 +1,74 @@
+---
+/**
+ * ImageSlot: shows the real image once it exists, otherwise a labeled placeholder.
+ *
+ * To fill a slot, save the image as:
+ *   src/images/<folder>/<name>.(webp|jpg|jpeg|png|avif)
+ * e.g. folder="ani" name="cover" → src/images/ani/cover.jpg
+ *
+ * Or drop files into /inbox and run the /add-images command in Claude Code.
+ */
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+interface Props {
+  folder: string;
+  name: string;
+  alt: string;
+  hint: string;          // what to upload, shown on the placeholder
+  caption?: string;
+  ratio?: string;        // placeholder aspect ratio, e.g. "16 / 9"
+  wide?: boolean;        // break out wider than the text column
+}
+
+const { folder, name, alt, hint, caption, ratio = '16 / 9', wide = false } = Astro.props;
+
+const files = import.meta.glob<{ default: ImageMetadata }>(
+  '/src/images/**/*.{webp,jpg,jpeg,png,avif}',
+  { eager: true }
+);
+const match = Object.entries(files).find(([path]) =>
+  new RegExp(`^/src/images/${folder}/${name}\\.(webp|jpe?g|png|avif)$`, 'i').test(path)
+);
+const img = match?.[1].default;
+---
+
+<figure class:list={['slot', { wide }]}>
+  {img ? (
+    <Image
+      src={img}
+      alt={alt}
+      widths={[480, 960, 1440, 2048].filter((w) => w <= img.width)}
+      sizes={wide ? '(min-width: 1200px) 1200px, 100vw' : '(min-width: 860px) 860px, 100vw'}
+      loading="lazy"
+      decoding="async"
+    />
+  ) : (
+    <div class="placeholder" style={`aspect-ratio: ${ratio}`} role="img" aria-label={`Image coming soon: ${alt}`}>
+      <span class="ph-label">Image needed</span>
+      <span class="ph-hint">{hint}</span>
+      <code class="ph-path">src/images/{folder}/{name}.jpg</code>
+    </div>
+  )}
+  {caption && <figcaption>{caption}</figcaption>}
+</figure>
+
+<style>
+  .slot { margin: 2.5rem 0; }
+  .slot.wide { margin-inline: calc(50% - min(50vw - var(--gutter), 600px)); }
+  .slot :global(img) { width: 100%; height: auto; display: block; }
+  figcaption { font-family: var(--font-mono); font-size: 0.8rem; color: var(--muted); margin-top: 0.75rem; }
+  .placeholder {
+    width: 100%;
+    border: 2px dashed var(--line-strong);
+    background: repeating-linear-gradient(45deg, var(--bg-elev), var(--bg-elev) 12px, var(--bg) 12px, var(--bg) 24px);
+    display: grid;
+    place-content: center;
+    gap: 0.5rem;
+    text-align: center;
+    padding: 1.5rem;
+  }
+  .ph-label { font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--warn); }
+  .ph-hint { font-size: 1rem; max-width: 38ch; margin-inline: auto; }
+  .ph-path { font-family: var(--font-mono); font-size: 0.75rem; color: var(--muted); }
+</style>

@@ -1,0 +1,44 @@
+---
+# Copy this file to a new name (e.g. my-project.mdx). The file name becomes the URL: /work/my-project/
+# Then make the image folder: src/images/my-project/
+title: Project name
+summary: One line. The problem, what you did, and the result.
+role: Your title and what you owned
+timeline: Mon YYYY – Mon YYYY
+team: Roles you worked with (not names)
+order: 3
+cover:
+  alt: Describe the cover image for someone who can't see it
+  hint: What image to put here
+status: draft
+hidden: true   # flip to false when it's ready to show on the home page
+---
+import ImageSlot from '../../components/ImageSlot.astro';
+import Todo from '../../components/Todo.astro';
+import Bento from '../../components/Bento.astro';
+
+## The problem
+Who was struggling, with what, and why it mattered. 2–4 sentences.
+
+## My role
+What YOU did vs. what the team did. Be specific and honest.
+
+## Process
+2–3 moments that show your judgment, not every step.
+
+<ImageSlot folder="my-project" name="process" alt="..." hint="A real artifact from your process" />
+
+## The solution
+<ImageSlot folder="my-project" name="final" alt="..." hint="Final screens" wide />
+
+{/* Side-by-side images: wrap them in <Bento> (add cols={3} for three across, wide to span the page). */}
+<Bento>
+  <ImageSlot folder="my-project" name="detail-1" alt="..." hint="A close-up of one detail" />
+  <ImageSlot folder="my-project" name="detail-2" alt="..." hint="Another detail" />
+</Bento>
+
+## Outcome
+Real results only. If you don't have a number, say what changed and how you know.
+
+## Reflection
+What you learned and what you'd do differently. 2–3 sentences.

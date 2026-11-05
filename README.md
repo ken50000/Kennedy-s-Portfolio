@@ -1,55 +1,46 @@
-# Kennedy Campbell — Portfolio
+# Kennedy Campbell: Portfolio
 
-A single-page, hash-routed portfolio site. Pure HTML/CSS/JS — no build step, no dependencies to install.
+Hi Kennedy! This is your portfolio site. The design, the interactive hero, and the page layouts are built.
+What's left is the part only you can do: your images, your answers, and your résumé.
 
-```
-.
-├── index.html          # all pages (home, about, work, 4 case studies, contact)
-├── css/style.css        # all styles
-├── js/script.js         # routing, tabs, ticker, project cards, interactions
-└── assets/img/          # all images
-```
+**Live preview:** https://ken50000.github.io/Kennedy-s-Portfolio/
 
-## Run it locally
+## Get going
 
-No build step needed. Just open `index.html` in a browser, or serve it locally:
+1. Download this repo as a zip (green **Code** button → **Download ZIP**) and unzip it somewhere you'll keep it.
+2. Open the unzipped folder in **Claude Code**.
+3. Type **`/start`**. Claude installs what it needs, checks what's left, and tells you the top 3 things to do.
 
-```bash
-python3 -m http.server 8000
-# then visit http://localhost:8000
-```
+That's it. From there, Claude asks you one question at a time and handles the code, images, and layout.
 
-## Upload to GitHub
+## What you'll be asked for
 
-**Option A — GitHub's website (no command line needed)**
-1. Go to [github.com/new](https://github.com/new) and create a new repository (e.g. `portfolio`).
-2. On the new repo's page, click **"uploading an existing file."**
-3. Drag in the `index.html` file, the `css`, `js`, and `assets` folders, and this `README.md`.
-4. Commit the changes.
+| What | How |
+|------|-----|
+| **Images** (screens, mockups, covers) | Drag them into the `inbox/` folder, then type `/add-images`. Every empty spot on the site shows a yellow "Image needed" box that says exactly what goes there. |
+| **Answers** about your work | Type `/next`. Claude asks one question at a time and writes your answer into the page, in your words. |
+| **Résumé** | Export your final résumé as `resume.pdf` into the `public/` folder. |
+| **A few facts** | Your primary title, the email you want public, and your years of experience (Claude will ask). |
 
-**Option B — Git command line**
-```bash
-cd path/to/this/folder
-git init
-git add .
-git commit -m "Initial portfolio"
-git branch -M main
-git remote add origin https://github.com/<your-username>/<repo-name>.git
-git push -u origin main
-```
+Right now there are about **25 images** and **25 questions** open. You don't have to do them all at once.
+Start with the case study covers and the "confirm the story" questions; they make the biggest difference.
 
-## Deploy for free with GitHub Pages
+## Commands
 
-1. In your repo on GitHub, go to **Settings → Pages**.
-2. Under "Build and deployment," set **Source** to `Deploy from a branch`.
-3. Set **Branch** to `main` and folder to `/ (root)`, then **Save**.
-4. GitHub will give you a live URL, typically:
-   `https://<your-username>.github.io/<repo-name>/`
-   (takes a minute or two to go live after your first push).
+| Type this in Claude Code | What it does |
+|------|-------------|
+| `/start` | Checks what's left and suggests the next 3 things |
+| `/next` | Works through open questions with you, one at a time |
+| `/add-images` | Files everything in `inbox/` into the right spots |
+| `/check` | Pre-publish check: images, answers, build, accessibility |
+| `/publish` | Puts the site online (free, on GitHub Pages) |
 
-## Editing content
+You can also run `npm run dev` and open http://localhost:4321 to see your changes live.
 
-- **Text/content:** edit directly in `index.html` — each page is a `<div class="page" id="page-...">` block.
-- **Project cards & Topcoder graphic:** near the top of `js/script.js`, in the `projects` array.
-- **Colors/fonts:** all in the `:root { ... }` block at the top of `css/style.css`.
-- **Images:** swap files in `assets/img/` (keep the same filename, or update the `src`/`assets/img/...` reference in `index.html`).
+## Before it goes live for real
+
+Run `/check`. Then send Nacho the preview link so he can take a look before you share it widely.
+
+---
+
+Built with [Astro](https://astro.build). Hosted free on GitHub Pages.

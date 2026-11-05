@@ -1,0 +1,27 @@
+---
+/**
+ * Todo: a visible note for something Kennedy still needs to answer or confirm.
+ * It shows on the page on purpose, so nothing unfinished ships unnoticed.
+ * `npm run status` lists every open Todo across the site.
+ */
+interface Props { label?: string }
+const { label = 'To do' } = Astro.props;
+---
+
+<aside class="todo" aria-label={label}>
+  <span class="todo-label">{label}</span>
+  <div class="todo-body"><slot /></div>
+</aside>
+
+<style>
+  .todo {
+    background: color-mix(in srgb, var(--warn) 10%, var(--bg));
+    padding: 0.9rem 1.1rem;
+    margin: 1.5rem 0;
+    border: 2px solid var(--warn);
+    border-left-width: 8px;
+  }
+  .todo-label { display: block; font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--warn); margin-bottom: 0.35rem; }
+  .todo-body { font-size: 0.95rem; }
+  .todo-body :global(p) { margin: 0.25rem 0; }
+</style>

@@ -1,0 +1,122 @@
+---
+import Base from '../layouts/Base.astro';
+import ImageSlot from '../components/ImageSlot.astro';
+import Todo from '../components/Todo.astro';
+---
+
+<Base title="About" description="About Kennedy Campbell, UX designer, skateboarder, and creator.">
+  <div class="container about">
+    <h1 class="page-title bleed-red">About</h1>
+    <div class="grid">
+      <div class="photo">
+        <ImageSlot
+          folder="about"
+          name="portrait"
+          alt="Kennedy Campbell smiling against a red wall, wearing glasses and a black fur trapper hat"
+          hint="A portrait of you. Square or 4:5 works best."
+          ratio="4 / 5"
+        />
+      </div>
+      <div class="text">
+        <!-- Her own words, from her Framer draft. Light edits only. -->
+        <p class="lead">
+          Thanks for stopping by! I'm Kennedy, a UX designer originally from West Bloomfield, Michigan. I'm passionate
+          about creating intuitive experiences that solve real problems.
+        </p>
+        <p>
+          At Walmart Global Tech, I design the UI for ReimburseMe, Walmart's expense reimbursement app. I studied
+          Experience Architecture (human-computer interaction) at Michigan State University, and I designed Ani, an
+          animanga social app.
+        </p>
+        <p>Outside of design, I'm a sponsored skateboarder and creator who loves exploring new ways to stay creative.</p>
+        <Todo label="Kennedy: skateboarding">
+          Add one line about who sponsors you or what you create (videos? art?), and a link if you want people to see it.
+        </Todo>
+        <Todo label="Kennedy: music">
+          Nacho mentioned you produce music, and the home page now lists "music production" under Off the clock. Is that right? If so, add
+          one line here about what you make, and a link if you want people to listen.
+        </Todo>
+
+        <h2>How I work</h2>
+        <p>
+          I believe great design goes beyond aesthetics. It's about understanding people. I focus on identifying user
+          needs, simplifying complex interactions, and designing solutions that feel natural and intuitive.
+        </p>
+        <p>
+          And I love visual QA. Comparing what shipped against the design and chasing down every mismatch is like
+          solving a puzzle.
+        </p>
+        <Todo label="Kennedy: make it specific">
+          Add one real example of a VQA catch you're proud of: what was off, how you spotted it, what got fixed.
+          Specific beats general every time.
+        </Todo>
+
+        <!-- Experience, education, and skills moved from her old portfolio on 2026-11-05, rewritten at her level. -->
+        <h2>Experience</h2>
+        <ol class="timeline">
+          <li>
+            <p class="mono when">Jul 2024 – now</p>
+            <h3>UX Designer · Walmart Global Tech</h3>
+            <p class="mono muted where">Bentonville, AR</p>
+            <p>I design UI for flows in ReimburseMe, Walmart's expense app, on a team led by a senior UX designer.</p>
+          </li>
+          <li>
+            <p class="mono when">Jun – Aug 2024</p>
+            <h3>Product Management Specialist Intern · Walmart Global Tech</h3>
+            <p class="mono muted where">Bentonville, AR</p>
+            <p>Prioritized roadmaps, ran competitive analysis, prototyped an internal expense platform, and presented to the CTO.</p>
+          </li>
+          <li>
+            <p class="mono when">Jun 2024</p>
+            <h3>Web Design Intern · MSU ADA Accessibility</h3>
+            <p class="mono muted where">West Bloomfield, MI</p>
+            <p>Made wireframes and prototypes and ran usability tests to shape a client's accessibility roadmap.</p>
+          </li>
+          <li>
+            <p class="mono when">Feb 2022 – Jun 2025</p>
+            <h3>Product Designer · Ani</h3>
+            <p class="mono muted where">Nashville, TN</p>
+            <p>Designed the core experience and design system for an animanga social app. The MVP reached 10K+ downloads in its first month.</p>
+          </li>
+        </ol>
+        <Todo label="Kennedy: check the dates">
+          Your old portfolio had these dates. Some overlap: the internship (Jun – Aug 2024) and your full-time role
+          (Jul 2024) both include July 2024, and the accessibility internship is listed as June 2024 only. Are they
+          right? Also, where does the Workforce Planning Portal fit?
+        </Todo>
+
+        <h2>Education</h2>
+        <p><strong>B.A. Experience Architecture (human-computer interaction)</strong><br />
+          <span class="mono muted">Michigan State University · May 2025</span></p>
+
+        <h2>Skills and tools</h2>
+        <p class="mono muted label">Practice</p>
+        <ul class="tags">
+          {['User research', 'Usability testing', 'Wireframing', 'Prototyping', 'Information architecture', 'User flows', 'Visual QA', 'Agile / Scrum', 'Product lifecycle management', 'B2B and B2C'].map((t) => <li>{t}</li>)}
+        </ul>
+        <p class="mono muted label">Tools</p>
+        <ul class="tags">
+          {['Figma', 'Figma Make', 'Adobe Creative Suite', 'Miro', 'Jira', 'Confluence', 'Canva', 'HTML / CSS', 'VS Code', 'GitHub'].map((t) => <li>{t}</li>)}
+        </ul>
+      </div>
+    </div>
+  </div>
+</Base>
+
+<style>
+  .about { padding-top: 3rem; }
+  .grid { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: clamp(2rem, 5vw, 4rem); align-items: start; }
+  .photo :global(.slot) { margin-top: 0; }
+  .photo :global(img) { border: var(--rule); box-shadow: var(--shadow); }
+  .lead { font-family: var(--font-display); font-size: clamp(1.4rem, 2.6vw, 2rem); font-weight: 700; line-height: 1.15; letter-spacing: -0.03em; }
+  .text h2 { margin-top: 3rem; }
+  .timeline { list-style: none; padding: 0; margin: 1rem 0 0; border-top: var(--rule); }
+  .timeline li { padding: 1.25rem 0; border-bottom: 1px solid var(--line-soft); }
+  .timeline h3 { margin: 0.25rem 0 0; font-size: 1.1rem; }
+  .timeline p { margin: 0.35rem 0 0; }
+  .when { margin: 0 !important; }
+  .label { margin: 1.5rem 0 0.5rem; text-transform: uppercase; }
+  .tags { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .tags li { border: 1px solid currentColor; padding: 0.25rem 0.65rem; font-size: 0.9rem; }
+  @media (max-width: 800px) { .grid { grid-template-columns: 1fr; } }
+</style>

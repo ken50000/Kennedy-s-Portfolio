@@ -1,0 +1,125 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import ImageSlot from '../../components/ImageSlot.astro';
+import { url } from '../../site';
+
+export async function getStaticPaths() {
+  // Hidden case studies show in `npm run dev` for previewing, but are never built for the live site.
+  const studies = (await getCollection('case-studies')).filter((s) => import.meta.env.DEV || !s.data.hidden);
+  return studies.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+const d = entry.data;
+---
+
+<Base title={d.title} description={d.summary}>
+  <article>
+    <header class="cs-head container">
+      <p class="mono back"><a href={url('/#work')}>← All work</a></p>
+      <h1 class="page-title bleed-red">{d.title}</h1>
+
+      <!-- Bento intro: the cover as the big tile, summary and facts beside it. -->
+      <div class="cs-hero">
+        <div class="cs-cover">
+          <ImageSlot folder={entry.id} name="cover" alt={d.cover.alt} hint={d.cover.hint} ratio="16 / 10" />
+        </div>
+        <p class="summary">{d.summary}</p>
+        <dl class="facts">
+          <div><dt class="mono">Role</dt><dd>{d.role}</dd></div>
+          <div><dt class="mono">Timeline</dt><dd>{d.timeline}</dd></div>
+          {d.team && <div><dt class="mono">Team</dt><dd>{d.team}</dd></div>}
+          {d.tools && <div><dt class="mono">Tools</dt><dd>{d.tools}</dd></div>}
+        </dl>
+      </div>
+    </header>
+
+    <!-- Each `##` section becomes a row: heading on the left, content on the right
+         (see src/lib/rehype-sections.mjs). Wide images and <Bento wide> span both columns. -->
+    <div class="container cs-body">
+      <Content />
+    </div>
+  </article>
+</Base>
+
+<style>
+  .cs-head { padding-top: 2.5rem; }
+  .back { margin: 0 0 1rem; }
+  .cs-head h1 { margin: 0; }
+
+  .cs-hero {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    grid-template-rows: auto 1fr;
+    gap: 2px;
+    background: var(--line);
+    border: var(--rule);
+    margin-top: clamp(1.5rem, 4vw, 2.5rem);
+  }
+  .cs-hero > * { background: var(--bg); margin: 0; }
+  .cs-cover { grid-column: span 8; grid-row: span 2; padding: clamp(1rem, 2.2vw, 1.75rem); display: flex; }
+  .cs-cover :global(.slot) { margin: 0; flex: 1; display: flex; }
+  .cs-cover :global(img) { width: 100%; height: 100%; object-fit: cover; border: var(--rule); }
+  .cs-cover :global(.placeholder) { aspect-ratio: auto !important; min-height: clamp(14rem, 30vw, 24rem); height: 100%; }
+  .cs-hero > .summary {
+    grid-column: span 4;
+    padding: clamp(1.25rem, 2.5vw, 2rem);
+    font-family: var(--font-display);
+    font-size: clamp(1.3rem, 2.2vw, 1.85rem);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.15;
+    background: var(--grad-red);
+    color: var(--accent-ink);
+  }
+  .facts { grid-column: span 4; padding: clamp(1.25rem, 2.5vw, 2rem); display: flex; flex-direction: column; }
+  .facts div { padding: 0.75rem 0; }
+  .facts div:first-child { padding-top: 0; }
+  .facts div + div { border-top: 1px solid var(--line-soft); }
+  .facts dt { color: var(--red-hot); margin-bottom: 0.2rem; }
+  .facts dd { margin: 0; font-weight: 600; }
+
+  /* Body: one row per section, heading in a narrow left column and content on the right. */
+  .cs-body { padding-top: clamp(1rem, 3vw, 2rem); }
+  .cs-body :global(.cs-section) {
+    display: grid;
+    grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
+    column-gap: clamp(1.5rem, 5vw, 4.5rem);
+    align-items: start;
+    padding-block: clamp(2.5rem, 6vw, 4.5rem);
+    border-top: var(--rule);
+  }
+  .cs-body :global(.cs-section:first-child) { border-top: 0; }
+  .cs-body :global(.cs-section > *) { grid-column: 2; }
+  .cs-body :global(.cs-section > h2) {
+    grid-column: 1;
+    margin: 0;
+    font-size: clamp(1.75rem, 3.2vw, 2.75rem);
+    letter-spacing: -0.045em;
+  }
+  .cs-body :global(.cs-section > h2::before) {
+    content: '';
+    display: block;
+    width: 2.5rem;
+    height: 6px;
+    margin-bottom: 1rem;
+    background: var(--grad-red);
+  }
+  .cs-body :global(.cs-section > .slot.wide),
+  .cs-body :global(.cs-section > .cs-bento.wide) { grid-column: 1 / -1; margin-inline: 0; }
+  .cs-body :global(.cs-section > :first-child:not(h2)) { margin-top: 0; }
+  .cs-body :global(.cs-section > h2 + *) { margin-top: 0; }
+  .cs-body :global(.cs-section p),
+  .cs-body :global(.cs-section li) { max-width: 68ch; }
+  .cs-body :global(h3) { margin-top: 2rem; }
+  .cs-body :global(ul) { padding-left: 1.2rem; }
+  .cs-body :global(li) { margin-bottom: 0.4rem; }
+
+  @media (max-width: 860px) {
+    .cs-cover, .summary, .facts { grid-column: 1 / -1; grid-row: auto; }
+    .cs-body :global(.cs-section) { display: block; }
+    .cs-body :global(.cs-section > h2) { margin-bottom: 1.25rem; }
+  }
+</style>

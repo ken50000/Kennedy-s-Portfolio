@@ -1,0 +1,77 @@
+---
+/**
+ * SoundWaves: a quiet nod to her music production behind every page. One giant waveform across
+ * the whole screen, drawn as a ribbon of fine lines in her red gradient, loud in the middle and
+ * tapering off at the edges like a sound clip. Purely decorative: aria-hidden, no pointer events,
+ * and it holds still under reduced motion.
+ */
+const W = 1600;
+const H = 900;
+
+// One band of waveform lines. Each line is the same signal at a slightly different phase and
+// amplitude, so together they read as a ribbon of sound rather than a single sine.
+function band(cy: number, amp: number, lines: number, seed: number) {
+  const out: string[] = [];
+  for (let i = 0; i < lines; i++) {
+    const t = i / (lines - 1);
+    const phase = seed + t * 1.6;
+    const scale = 0.35 + 0.65 * Math.sin(Math.PI * t);
+    let d = '';
+    for (let x = 0; x <= W; x += 8) {
+      const u = x / W;
+      const env = Math.pow(Math.sin(Math.PI * u), 1.1) * (0.65 + 0.35 * Math.sin(u * 11 + seed));
+      const sig = Math.sin(u * 9 + phase) * 0.72 + Math.sin(u * 23 + phase * 2) * 0.28;
+      const y = cy + sig * env * amp * scale;
+      d += `${x === 0 ? 'M' : 'L'}${x} ${y.toFixed(1)}`;
+    }
+    out.push(d);
+  }
+  return out;
+}
+
+const lines = band(H * 0.5, 820, 22, 0.4);
+---
+
+<div class="sound-waves" aria-hidden="true">
+  <svg viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" focusable="false">
+    <defs>
+      <linearGradient id="wave-red" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2={W} y2="0">
+        <stop offset="0" stop-color="#ff4b3e" stop-opacity="0" />
+        <stop offset="0.2" stop-color="#ff4b3e" />
+        <stop offset="0.45" stop-color="#e2332b" />
+        <stop offset="0.75" stop-color="#b5251e" />
+        <stop offset="1" stop-color="#6b130f" stop-opacity="0" />
+      </linearGradient>
+    </defs>
+    <g class="band">
+      {lines.map((d) => <path d={d} />)}
+    </g>
+  </svg>
+</div>
+
+<style>
+  .sound-waves {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    opacity: 0.2;
+  }
+  svg { width: 100%; height: 100%; display: block; }
+  path {
+    fill: none;
+    stroke: url(#wave-red);
+    stroke-width: 1.25;
+    vector-effect: non-scaling-stroke;
+  }
+  .band { transform-box: fill-box; transform-origin: center; }
+
+  /* A slow breath, like a sustained note. */
+  @media (prefers-reduced-motion: no-preference) {
+    .band { animation: breathe 9s ease-in-out infinite alternate; }
+  }
+  @keyframes breathe {
+    from { transform: scaleY(0.88); }
+    to { transform: scaleY(1.04); }
+  }
+</style>

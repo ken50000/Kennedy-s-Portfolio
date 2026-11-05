@@ -1,0 +1,670 @@
+---
+/**
+ * HeroMess: the "clear the mess" hero.
+ *
+ * Her name is a real <h1> (cream letters with a red extrusion). A canvas on top covers the letters
+ * in grip tape and a sticker bomb. Moving the pointer across the name scrapes the grit off and peels
+ * stickers, which tumble away; after a short pause they slap back on. The mess is drawn in code;
+ * the only image is her face, a round sticker after "Kennedy" (cropped from the about/portrait photo).
+ *
+ * Reduced motion: the canvas never starts, so visitors see the clean name with no motion.
+ */
+import { Image } from 'astro:assets';
+import { site } from '../site';
+import portrait from '../images/about/portrait.jpg';
+
+const [first, ...rest] = site.name.split(' ');
+// Words on some stickers. Skate and studio slang only, no claims.
+const labels = ['808', 'kickflip', 'drop in', 'on beat', 'KC'];
+---
+
+<div class="stage" data-mess data-labels={JSON.stringify(labels)}>
+  <h1 id="hero-name" class="name">
+    <span class="line first">{first}<span class="face" aria-hidden="true"><Image src={portrait} alt="" width={800} loading="eager" /></span></span>
+    <span class="line second">{rest.join(' ')}</span>
+  </h1>
+  <canvas class="mess" aria-hidden="true"></canvas>
+</div>
+
+<style>
+  .stage { position: relative; touch-action: pan-y; }
+  .name {
+    position: relative;
+    z-index: 0;
+    font-family: 'Inter Variable', var(--font-display); /* bundled, so the canvas can match it exactly */
+    font-size: clamp(3.6rem, 17.5vw, 13.5rem);
+    font-weight: 800;
+    letter-spacing: -0.045em;
+    line-height: 0.88;
+    margin: 0;
+    color: var(--text);
+    /* Solid red extrusion, stepped so it reads as a cut-out block rather than a blur. */
+    text-shadow:
+      0.008em 0.008em 0 #e2332b, 0.016em 0.016em 0 #d42e26, 0.024em 0.024em 0 #c52a22,
+      0.032em 0.032em 0 #b5251e, 0.04em 0.04em 0 #a3211b, 0.048em 0.048em 0 #8f1c17,
+      0.056em 0.056em 0 #7a1813, 0.07em 0.09em 0.12em rgb(0 0 0 / 0.55);
+  }
+  .line { display: block; white-space: nowrap; }
+  .first { display: flex; align-items: center; gap: 0.1em; }
+  /* Her face as a round sticker in the gap after "Kennedy", above "ell". The crop zooms the
+     portrait onto her face. */
+  .face {
+    position: relative;
+    flex: none;
+    width: 0.55em;
+    aspect-ratio: 1;
+    margin-top: -0.06em;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 0.03em solid var(--text);
+    box-shadow: 0.05em 0.05em 0 var(--accent);
+    background: var(--accent);
+    transform: rotate(-6deg);
+  }
+  .face :global(img) {
+    position: absolute;
+    width: 250%;
+    max-width: none;
+    height: auto;
+    left: -58%;
+    top: -50%;
+  }
+  @media (min-width: 720px) {
+    .first { gap: 0.14em; }
+    .face { width: 0.74em; }
+  }
+  @media (min-width: 720px) {
+    .second { padding-left: 0.62em; }
+  }
+  .mess {
+    position: absolute;
+    z-index: 1;
+    left: calc(-1 * var(--gutter));
+    top: -1.5rem;
+    width: calc(100% + 2 * var(--gutter));
+    height: calc(100% + 1.5rem + 22rem);
+    pointer-events: none;
+  }
+  .stage.is-live { cursor: none; }
+  @media (pointer: coarse) { .stage.is-live { cursor: auto; } }
+
+</style>
+
+<script>
+  type Sticker = { x: number; y: number; rot: number; img: HTMLCanvasElement; w: number; h: number; r: number; on: boolean; t: number };
+  type Bit = { img?: HTMLCanvasElement; w: number; h: number; color?: string; x: number; y: number; vx: number; vy: number; rot: number; vr: number; flip: number; vf: number; age: number; life: number; y0?: number; alpha?: number };
+
+  const INK = '#151413';
+  const CREAM = '#faf8f3';
+  const COLORS = ['#e2332b', '#5aaeff', '#f5b942', CREAM, '#ff7eb6'];
+  const MAX_BITS = 160;
+  const IDLE_BEFORE_REGROW = 1400;
+
+  const rand = (a: number, b: number) => a + Math.random() * (b - a);
+  const pick = <T,>(arr: T[]) => arr[Math.floor(Math.random() * arr.length)];
+  const easeOutBack = (t: number) => 1 + 2.4 * (t - 1) ** 3 + 1.4 * (t - 1) ** 2;
+
+  function layer(w: number, h: number, dpr: number) {
+    const c = document.createElement('canvas');
+    c.width = Math.max(1, Math.ceil(w * dpr));
+    c.height = Math.max(1, Math.ceil(h * dpr));
+    const ctx = c.getContext('2d')!;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    return { c, ctx };
+  }
+
+  // ---------- Stickers, drawn once each into their own little canvas ----------
+
+  function starPath(ctx: CanvasRenderingContext2D, r: number, points = 5, inner = 0.48) {
+    ctx.beginPath();
+    for (let i = 0; i < points * 2; i++) {
+      const a = (i * Math.PI) / points - Math.PI / 2;
+      const rr = i % 2 ? r * inner : r;
+      ctx.lineTo(Math.cos(a) * rr, Math.sin(a) * rr);
+    }
+    ctx.closePath();
+  }
+
+  function pillPath(ctx: CanvasRenderingContext2D, w: number, h: number, radius: number) {
+    ctx.beginPath();
+    ctx.roundRect(-w / 2, -h / 2, w, h, radius);
+  }
+
+  // Skate and studio stickers: decks, wheels, records, tapes, notes, waveforms, plus a few classics.
+  const KINDS = ['deck', 'deck', 'wheel', 'vinyl', 'vinyl', 'tape', 'note', 'wave', 'word', 'dot', 'smile', 'star', 'hazard'];
+
+  function makeSticker(r: number, dpr: number, font: string, labels: string[]) {
+    const kind = pick(KINDS);
+    const color = pick(COLORS);
+    const border = Math.max(2, r * 0.09);
+    let w = r * 2, h = r * 2;
+    let label = '';
+    let fontPx = 0;
+
+    if (kind === 'word') {
+      label = pick(labels);
+      fontPx = Math.max(9, r * 0.55);
+      const m = document.createElement('canvas').getContext('2d')!;
+      m.font = `800 ${fontPx}px ${font}`;
+      w = m.measureText(label).width + fontPx * 1.3;
+      h = fontPx * 1.9;
+    } else if (kind === 'hazard' || kind === 'wave') {
+      w = r * 2.5; h = r * 1.1;
+    } else if (kind === 'deck') {
+      w = r * 3; h = r * 1.05;
+    } else if (kind === 'tape') {
+      w = r * 2.3; h = r * 1.5;
+    }
+
+    const pad = border * 2 + 4;
+    const { c, ctx } = layer(w + pad * 2, h + pad * 2, dpr);
+    ctx.translate((w + pad * 2) / 2, (h + pad * 2) / 2);
+
+    const shape = () => {
+      if (kind === 'word' || kind === 'deck' || kind === 'wave') pillPath(ctx, w, h, h / 2);
+      else if (kind === 'hazard') pillPath(ctx, w, h, h * 0.18);
+      else if (kind === 'tape') pillPath(ctx, w, h, h * 0.14);
+      else if (kind === 'star') starPath(ctx, r);
+      else { ctx.beginPath(); ctx.arc(0, 0, r, 0, Math.PI * 2); }
+    };
+
+    // Die-cut white edge with a soft drop shadow, then the face.
+    ctx.save();
+    ctx.shadowColor = 'rgb(0 0 0 / 0.45)';
+    ctx.shadowBlur = border * 1.5;
+    ctx.shadowOffsetY = border * 0.6;
+    shape();
+    ctx.lineJoin = 'round';
+    ctx.lineWidth = border * 2;
+    ctx.strokeStyle = CREAM;
+    ctx.stroke();
+    ctx.restore();
+    shape();
+    const face = kind === 'hazard' ? '#f5b942' : kind === 'vinyl' ? INK : color;
+    ctx.fillStyle = face;
+    ctx.fill();
+
+    const inkOn = face === CREAM || face === '#f5b942' || face === '#5aaeff' || face === '#ff7eb6' ? INK : CREAM;
+    ctx.fillStyle = inkOn;
+    ctx.strokeStyle = inkOn;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    const dot = (x: number, y: number, rr: number) => { ctx.beginPath(); ctx.arc(x, y, rr, 0, Math.PI * 2); ctx.fill(); };
+
+    if (kind === 'word') {
+      ctx.font = `800 ${fontPx}px ${font}`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(label, 0, fontPx * 0.05);
+    } else if (kind === 'hazard') {
+      ctx.save();
+      shape();
+      ctx.clip();
+      ctx.fillStyle = INK;
+      for (let x = -w; x < w; x += h * 0.7) {
+        ctx.beginPath();
+        ctx.moveTo(x, h / 2); ctx.lineTo(x + h * 0.35, h / 2); ctx.lineTo(x + h * 0.35 + h, -h / 2); ctx.lineTo(x + h, -h / 2);
+        ctx.fill();
+      }
+      ctx.restore();
+    } else if (kind === 'deck') {
+      // Top of a deck: truck bolts near each end, and a stripe of grip down the middle.
+      ctx.save();
+      shape();
+      ctx.clip();
+      ctx.fillStyle = 'rgb(21 20 19 / 0.85)';
+      ctx.fillRect(-w * 0.28, -h / 2, w * 0.56, h);
+      ctx.restore();
+      ctx.fillStyle = inkOn;
+      for (const sx of [-1, 1]) {
+        const bx = sx * w * 0.36;
+        for (const [dx, dy] of [[-1, -1], [1, -1], [-1, 1], [1, 1]]) dot(bx + dx * h * 0.11, dy * h * 0.16, Math.max(1, h * 0.05));
+      }
+    } else if (kind === 'wheel') {
+      ctx.lineWidth = r * 0.1;
+      ctx.beginPath(); ctx.arc(0, 0, r * 0.72, 0, Math.PI * 2); ctx.stroke();
+      ctx.fillStyle = INK;
+      dot(0, 0, r * 0.36);
+      ctx.fillStyle = CREAM;
+      dot(0, 0, r * 0.12);
+    } else if (kind === 'vinyl') {
+      ctx.strokeStyle = 'rgb(250 248 243 / 0.22)';
+      ctx.lineWidth = Math.max(0.6, r * 0.03);
+      for (const k of [0.86, 0.74, 0.62, 0.5]) { ctx.beginPath(); ctx.arc(0, 0, r * k, 0, Math.PI * 2); ctx.stroke(); }
+      ctx.fillStyle = color === CREAM ? '#e2332b' : color;
+      dot(0, 0, r * 0.36);
+      ctx.fillStyle = INK;
+      dot(0, 0, r * 0.07);
+    } else if (kind === 'tape') {
+      // Cassette: a dark window with two reels.
+      ctx.fillStyle = INK;
+      ctx.beginPath(); ctx.roundRect(-w * 0.36, -h * 0.28, w * 0.72, h * 0.4, h * 0.08); ctx.fill();
+      ctx.fillStyle = CREAM;
+      dot(-w * 0.18, -h * 0.08, h * 0.12);
+      dot(w * 0.18, -h * 0.08, h * 0.12);
+      ctx.fillStyle = INK;
+      dot(-w * 0.18, -h * 0.08, h * 0.05);
+      dot(w * 0.18, -h * 0.08, h * 0.05);
+      ctx.fillStyle = inkOn;
+      ctx.fillRect(-w * 0.22, h * 0.24, w * 0.44, h * 0.08);
+    } else if (kind === 'note') {
+      // Two beamed eighth notes.
+      ctx.lineWidth = r * 0.12;
+      ctx.beginPath(); ctx.moveTo(-r * 0.22, r * 0.32); ctx.lineTo(-r * 0.22, -r * 0.42); ctx.lineTo(r * 0.42, -r * 0.54); ctx.lineTo(r * 0.42, r * 0.2); ctx.stroke();
+      ctx.save(); ctx.translate(-r * 0.38, r * 0.34); ctx.rotate(-0.4); ctx.beginPath(); ctx.ellipse(0, 0, r * 0.2, r * 0.14, 0, 0, Math.PI * 2); ctx.fill(); ctx.restore();
+      ctx.save(); ctx.translate(r * 0.26, r * 0.22); ctx.rotate(-0.4); ctx.beginPath(); ctx.ellipse(0, 0, r * 0.2, r * 0.14, 0, 0, Math.PI * 2); ctx.fill(); ctx.restore();
+    } else if (kind === 'wave') {
+      // A waveform, like a clip in her DAW.
+      const bars = 13;
+      const bw = (w * 0.74) / bars;
+      ctx.lineWidth = Math.max(1, bw * 0.55);
+      for (let i = 0; i < bars; i++) {
+        const x = -w * 0.37 + bw * (i + 0.5);
+        const amp = h * 0.34 * (0.25 + 0.75 * Math.abs(Math.sin(i * 1.7 + r)));
+        ctx.beginPath(); ctx.moveTo(x, -amp); ctx.lineTo(x, amp); ctx.stroke();
+      }
+    } else if (kind === 'dot') {
+      ctx.font = `800 ${r * 0.85}px ${font}`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('KC', 0, r * 0.04);
+    } else if (kind === 'smile') {
+      ctx.lineWidth = r * 0.12;
+      ctx.beginPath(); ctx.arc(0, r * 0.05, r * 0.52, 0.15 * Math.PI, 0.85 * Math.PI); ctx.stroke();
+      dot(-r * 0.3, -r * 0.22, r * 0.1);
+      dot(r * 0.3, -r * 0.22, r * 0.1);
+    } else if (kind === 'star') {
+      dot(0, 0, r * 0.14);
+    }
+
+    return { img: c, w: w + pad * 2, h: h + pad * 2, hit: Math.min(w, h) / 2 };
+  }
+
+  // ---------- The effect ----------
+
+  function initMess(stage: HTMLElement) {
+    const h1 = stage.querySelector('h1')!;
+    const canvas = stage.querySelector('canvas')!;
+    const labels: string[] = JSON.parse(stage.dataset.labels || '[]');
+    const ctx = canvas.getContext('2d')!;
+
+    let dpr = 1, cw = 0, ch = 0, size = 100, brush = 12;
+    let box = { x: 0, y: 0, w: 1, h: 1 };
+    let shape: ReturnType<typeof layer>, grip: ReturnType<typeof layer>, erase: ReturnType<typeof layer>, work: ReturnType<typeof layer>;
+    let stickers: Sticker[] = [];
+    let bits: Bit[] = [];
+    let eraseDirty = false, healFor = 0;
+    let lastActive = 0, regrowAt = 0, lastSlap = 0;
+    let pointer: { x: number; y: number; inside: boolean; fine: boolean } = { x: 0, y: 0, inside: false, fine: true };
+    let last: { x: number; y: number } | null = null;
+    let sweep: { start: number; dur: number; t: number; hold: number; path: (t: number) => { x: number; y: number } } | null = null;
+    let visible = true, running = false, prevT = 0;
+
+    function build() {
+      const rect = canvas.getBoundingClientRect();
+      if (!rect.width) return;
+      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      cw = rect.width; ch = rect.height;
+      canvas.width = Math.ceil(cw * dpr);
+      canvas.height = Math.ceil(ch * dpr);
+
+      const cs = getComputedStyle(h1);
+      size = parseFloat(cs.fontSize);
+      brush = Math.max(18, size * 0.13);
+      const font = `${cs.fontWeight} ${size}px ${cs.fontFamily}`;
+
+      // Every glyph's position comes from the DOM, so the mess sits exactly on the real text.
+      const glyphs: { ch: string; x: number; y: number; w: number; h: number }[] = [];
+      const walker = document.createTreeWalker(h1, NodeFilter.SHOW_TEXT);
+      const range = document.createRange();
+      while (walker.nextNode()) {
+        const node = walker.currentNode as Text;
+        for (let i = 0; i < node.length; i++) {
+          const c = node.data[i];
+          if (!c.trim()) continue;
+          range.setStart(node, i);
+          range.setEnd(node, i + 1);
+          const r = range.getBoundingClientRect();
+          glyphs.push({ ch: c, x: r.left - rect.left, y: r.top - rect.top, w: r.width, h: r.height });
+        }
+      }
+      if (!glyphs.length) return;
+
+      const pad = size * 0.08;
+      const minX = Math.min(...glyphs.map((g) => g.x)) - pad;
+      const minY = Math.min(...glyphs.map((g) => g.y)) - pad;
+      const maxX = Math.max(...glyphs.map((g) => g.x + g.w)) + pad;
+      const maxY = Math.max(...glyphs.map((g) => g.y + g.h)) + pad;
+      box = { x: minX, y: minY, w: maxX - minX, h: maxY - minY };
+
+      shape = layer(box.w, box.h, dpr);
+      grip = layer(box.w, box.h, dpr);
+      erase = layer(box.w, box.h, dpr);
+      work = layer(box.w, box.h, dpr);
+
+      // Letter silhouettes, a hair wider than the DOM glyphs to hide anti-aliased edges.
+      const s = shape.ctx;
+      s.font = font;
+      s.textBaseline = 'alphabetic';
+      const ascent = s.measureText('K').fontBoundingBoxAscent || size * 0.97;
+      s.fillStyle = '#000';
+      s.strokeStyle = '#000';
+      s.lineWidth = 2;
+      s.lineJoin = 'round';
+      for (const g of glyphs) {
+        s.fillText(g.ch, g.x - box.x, g.y - box.y + ascent);
+        s.strokeText(g.ch, g.x - box.x, g.y - box.y + ascent);
+      }
+
+      // Grip tape: charcoal with sandy grit, cut to the letters.
+      const tile = layer(96, 96, dpr);
+      tile.ctx.fillStyle = '#2b2826';
+      tile.ctx.fillRect(0, 0, 96, 96);
+      for (let i = 0; i < 1400; i++) {
+        tile.ctx.fillStyle = pick(['#45403b', '#56504a', '#1c1a18', '#6b645c', '#3a3531']);
+        tile.ctx.fillRect(rand(0, 96), rand(0, 96), rand(0.6, 1.6), rand(0.6, 1.6));
+      }
+      const g = grip.ctx;
+      g.fillStyle = g.createPattern(tile.c, 'repeat')!;
+      g.save();
+      g.setTransform(1, 0, 0, 1, 0, 0);
+      g.fillRect(0, 0, grip.c.width, grip.c.height);
+      g.restore();
+      g.globalCompositeOperation = 'destination-in';
+      g.drawImage(shape.c, 0, 0, box.w, box.h);
+      g.globalCompositeOperation = 'source-over';
+
+      // Sticker bomb: jittered grid over the letters, keeping points that land on a glyph.
+      const data = shape.ctx.getImageData(0, 0, shape.c.width, shape.c.height).data;
+      const onGlyph = (x: number, y: number) => {
+        const px = Math.round(x * dpr), py = Math.round(y * dpr);
+        if (px < 0 || py < 0 || px >= shape.c.width || py >= shape.c.height) return false;
+        return data[(py * shape.c.width + px) * 4 + 3] > 128;
+      };
+      const step = size * 0.2;
+      const stickerFont = `"Inter Variable", system-ui, sans-serif`;
+      stickers = [];
+      for (let y = step / 2; y < box.h; y += step) {
+        for (let x = step / 2; x < box.w; x += step) {
+          const sx = x + rand(-step, step) * 0.35;
+          const sy = y + rand(-step, step) * 0.35;
+          if (!onGlyph(sx, sy)) continue;
+          const st = makeSticker(size * rand(0.08, 0.15), dpr, stickerFont, labels);
+          stickers.push({ x: sx, y: sy, rot: rand(-0.5, 0.5), img: st.img, w: st.w, h: st.h, r: st.hit, on: true, t: -1e6 });
+        }
+      }
+      stickers.sort(() => Math.random() - 0.5);
+      eraseDirty = false;
+      erase.ctx.clearRect(0, 0, box.w, box.h);
+      bits = [];
+      wake();
+    }
+
+    // ---------- Scraping ----------
+
+    function scrapeAt(x: number, y: number, vx: number, now: number) {
+      const lx = x - box.x, ly = y - box.y;
+      const e = erase.ctx;
+      const grad = e.createRadialGradient(lx, ly, 0, lx, ly, brush);
+      grad.addColorStop(0, 'rgb(0 0 0 / 1)');
+      grad.addColorStop(0.65, 'rgb(0 0 0 / 0.9)');
+      grad.addColorStop(1, 'rgb(0 0 0 / 0)');
+      e.fillStyle = grad;
+      e.beginPath();
+      e.arc(lx, ly, brush, 0, Math.PI * 2);
+      e.fill();
+      eraseDirty = true;
+      healFor = 0;
+
+      for (const s of stickers) {
+        if (!s.on) continue;
+        const dx = s.x - lx, dy = s.y - ly;
+        if (dx * dx + dy * dy > (brush + s.r * 0.6) ** 2) continue;
+        s.on = false;
+        spawn({ img: s.img, w: s.w, h: s.h, x: s.x + box.x, y: s.y + box.y, vx: vx * 0.25 + rand(-0.12, 0.12), vy: rand(-0.55, -0.2), rot: s.rot, vr: rand(-0.012, 0.012), flip: 0, vf: rand(0.004, 0.012), age: 0, life: rand(1100, 1500) });
+      }
+      if (onLetters(lx, ly) && Math.random() < 0.7) {
+        for (let i = 0; i < 2; i++) {
+          const d = rand(2, 4.5);
+          spawn({ color: pick(['#56504a', '#6b645c', '#2b2826']), w: d, h: d, x, y, vx: vx * 0.2 + rand(-0.1, 0.1), vy: rand(-0.3, 0), rot: 0, vr: 0, flip: 0, vf: 0, age: 0, life: rand(500, 900) });
+        }
+      }
+      lastActive = now;
+      regrowAt = Math.max(regrowAt, now + IDLE_BEFORE_REGROW);
+      wake();
+    }
+
+    function onLetters(lx: number, ly: number) {
+      return lx > 0 && ly > 0 && lx < box.w && ly < box.h;
+    }
+
+    function spawn(b: Bit) {
+      b.y0 = b.y;
+      bits.push(b);
+      if (bits.length > MAX_BITS) bits.splice(0, bits.length - MAX_BITS);
+    }
+
+    function strokeTo(x: number, y: number, now: number) {
+      if (!last) { last = { x, y }; scrapeAt(x, y, 0, now); return; }
+      const dx = x - last.x, dy = y - last.y;
+      const dist = Math.hypot(dx, dy);
+      const steps = Math.max(1, Math.ceil(dist / (brush * 0.35)));
+      const vx = Math.max(-1.5, Math.min(1.5, dx / 16));
+      for (let i = 1; i <= steps; i++) scrapeAt(last.x + (dx * i) / steps, last.y + (dy * i) / steps, vx, now);
+      last = { x, y };
+    }
+
+    const local = (e: PointerEvent) => {
+      const r = canvas.getBoundingClientRect();
+      return { x: e.clientX - r.left, y: e.clientY - r.top };
+    };
+    stage.addEventListener('pointermove', (e) => {
+      const p = local(e);
+      pointer = { ...p, inside: true, fine: e.pointerType === 'mouse' };
+      if (sweep) return;
+      strokeTo(p.x, p.y, performance.now());
+    });
+    stage.addEventListener('pointerdown', (e) => {
+      const p = local(e);
+      last = null;
+      if (!sweep) strokeTo(p.x, p.y, performance.now());
+    });
+    stage.addEventListener('pointerleave', () => { pointer.inside = false; last = null; wake(); });
+    stage.addEventListener('pointercancel', () => { last = null; });
+
+    // A scripted scrape: zig-zags along each line of the name.
+    function runSweep(dur: number, rows: number, hold: number) {
+      const lines = [...h1.querySelectorAll('.line')].map((l) => {
+        const r = l.getBoundingClientRect(), c = canvas.getBoundingClientRect();
+        return { x: r.left - c.left, y: r.top - c.top, w: r.width, h: r.height };
+      });
+      const passes = lines.flatMap((l) => Array.from({ length: rows }, (_, i) => ({ ...l, row: i, rtl: i % 2 === 1 })));
+      last = null;
+      sweep = {
+        start: performance.now(),
+        dur,
+        t: 0,
+        hold,
+        path: (t) => {
+          const k = Math.max(0, Math.min(passes.length - 1, Math.floor(t * passes.length)));
+          const p = passes[k];
+          const u = t * passes.length - k;
+          const along = p.rtl ? 1 - u : u;
+          const band = (p.row + 0.5) / rows;
+          return {
+            x: p.x - size * 0.05 + along * (p.w + size * 0.1),
+            y: p.y + p.h * (0.12 + band * 0.78) + Math.sin(along * Math.PI * 7) * size * (0.38 / rows),
+          };
+        },
+      };
+      wake();
+    }
+
+
+    // ---------- Frame loop ----------
+
+    function wake() {
+      if (running || !visible || document.hidden) return;
+      running = true;
+      prevT = performance.now();
+      requestAnimationFrame(frame);
+    }
+
+    function frame(now: number) {
+      const dt = Math.min(48, now - prevT);
+      prevT = now;
+
+      if (sweep) {
+        // Walk the path in small steps so a slow frame rate doesn't skip parts of the name.
+        // rAF's timestamp can be slightly older than the sweep's start, so clamp at 0 too.
+        const target = Math.max(sweep.t, Math.min(1, (now - sweep.start) / sweep.dur));
+        for (let t = sweep.t + 1 / 480; t < target; t += 1 / 480) {
+          const p = sweep.path(t);
+          strokeTo(p.x, p.y, now);
+        }
+        const p = sweep.path(target);
+        strokeTo(p.x, p.y, now);
+        sweep.t = target;
+        regrowAt = Math.max(regrowAt, now + sweep.hold);
+        if (target >= 1) { sweep = null; last = null; }
+      }
+
+      // Regrow: stickers slap back one at a time, and the grit fills back in.
+      let missing = 0;
+      for (const s of stickers) if (!s.on) missing++;
+      if (!sweep && now > regrowAt) {
+        if (missing && now - lastSlap > 55) {
+          const off = stickers.filter((s) => !s.on);
+          const s = pick(off);
+          s.on = true; s.t = now; s.rot += rand(-0.25, 0.25);
+          lastSlap = now;
+          missing--;
+        }
+        if (eraseDirty) {
+          healFor += dt;
+          const e = erase.ctx;
+          e.globalCompositeOperation = 'destination-out';
+          e.fillStyle = `rgb(0 0 0 / ${Math.min(1, dt / 420)})`;
+          e.fillRect(0, 0, box.w, box.h);
+          e.globalCompositeOperation = 'source-over';
+          if (healFor > 2200) { e.clearRect(0, 0, box.w, box.h); eraseDirty = false; }
+        }
+      }
+
+      // Compose the mess: grit minus scraped areas, then stickers, all cut to the letters.
+      const w = work.ctx;
+      w.clearRect(0, 0, box.w, box.h);
+      w.drawImage(grip.c, 0, 0, box.w, box.h);
+      if (eraseDirty) {
+        w.globalCompositeOperation = 'destination-out';
+        w.drawImage(erase.c, 0, 0, box.w, box.h);
+        w.globalCompositeOperation = 'source-over';
+      }
+      let slapping = false;
+      for (const s of stickers) {
+        if (!s.on) continue;
+        const age = now - s.t;
+        let k = 1;
+        if (age < 260) { k = 1.5 - 0.5 * easeOutBack(age / 260); slapping = true; w.globalAlpha = Math.min(1, age / 90); }
+        w.save();
+        w.translate(s.x, s.y);
+        w.rotate(s.rot);
+        w.scale(k, k);
+        w.drawImage(s.img, -s.w / 2, -s.h / 2, s.w, s.h);
+        w.restore();
+        w.globalAlpha = 1;
+      }
+      w.globalCompositeOperation = 'destination-in';
+      w.drawImage(shape.c, 0, 0, box.w, box.h);
+      w.globalCompositeOperation = 'source-over';
+
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.clearRect(0, 0, cw, ch);
+      ctx.drawImage(work.c, box.x, box.y, box.w, box.h);
+
+      // Peeled stickers and grit tumble away.
+      for (const b of bits) {
+        b.age += dt;
+        b.vy += 0.0016 * dt;
+        b.x += b.vx * dt;
+        b.y += b.vy * dt;
+        b.rot += b.vr * dt;
+        b.flip += b.vf * dt;
+        // Fade out by age, after a short fall, and well before the canvas edge, so nothing
+        // piles up or gets sliced off at the bottom.
+        const byAge = 1 - Math.max(0, (b.age - b.life * 0.5) / (b.life * 0.5));
+        const byFall = 1 - Math.max(0, (b.y - (b.y0 ?? b.y) - size * 0.35) / (size * 0.65));
+        const byEdge = (ch - 120 - b.y) / 120;
+        const fade = Math.min(byAge, byFall, byEdge, 1);
+        b.alpha = fade;
+        ctx.save();
+        ctx.globalAlpha = Math.max(0, fade);
+        ctx.translate(b.x, b.y);
+        ctx.rotate(b.rot);
+        if (b.img) {
+          ctx.scale(1, Math.cos(b.flip));
+          ctx.drawImage(b.img, -b.w / 2, -b.h / 2, b.w, b.h);
+        } else {
+          ctx.fillStyle = b.color!;
+          ctx.fillRect(-b.w / 2, -b.h / 2, b.w, b.h);
+        }
+        ctx.restore();
+      }
+      bits = bits.filter((b) => b.age < b.life && (b.alpha ?? 1) > 0);
+
+      // The scraper: a skate wheel that follows the mouse.
+      if (pointer.inside && pointer.fine) {
+        ctx.beginPath();
+        ctx.arc(pointer.x, pointer.y, brush, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgb(250 248 243 / 0.12)';
+        ctx.fill();
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = 'rgb(250 248 243 / 0.85)';
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.arc(pointer.x, pointer.y, brush * 0.4, 0, Math.PI * 2);
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.arc(pointer.x, pointer.y, brush * 0.14, 0, Math.PI * 2);
+        ctx.fillStyle = CREAM;
+        ctx.fill();
+      }
+
+      const busy = sweep || bits.length || missing || eraseDirty || slapping || pointer.inside || now - lastActive < 200;
+      if (busy && visible && !document.hidden) requestAnimationFrame(frame);
+      else running = false;
+    }
+
+    new IntersectionObserver(([entry]) => { visible = entry.isIntersecting; if (visible) wake(); }).observe(stage);
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) wake(); });
+
+    let resizeTimer = 0;
+    let lastWidth = stage.clientWidth;
+    new ResizeObserver(() => {
+      const w = stage.clientWidth;
+      if (w === lastWidth) return;
+      lastWidth = w;
+      clearTimeout(resizeTimer);
+      resizeTimer = window.setTimeout(build, 120);
+    }).observe(stage);
+
+    build();
+    stage.classList.add('is-live');
+    // One automatic scrape on load, so visitors who never move the mouse still see it (and learn it's interactive).
+    window.setTimeout(() => { if (!last) runSweep(1700, 2, 900); }, 700);
+  }
+
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (!reduce) {
+    for (const stage of document.querySelectorAll<HTMLElement>('[data-mess]')) {
+      const h1 = stage.querySelector('h1')!;
+      const font = getComputedStyle(h1);
+      document.fonts
+        .load(`${font.fontWeight} ${font.fontSize} ${font.fontFamily}`)
+        .then(() => document.fonts.load(`800 20px "Inter Variable"`))
+        .catch(() => {})
+        .finally(() => initMess(stage));
+    }
+  }
+</script>

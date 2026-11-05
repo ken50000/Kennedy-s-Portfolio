@@ -1,0 +1,116 @@
+---
+title: Topcoder Ideas
+summary: A community space where Topcoder members submit, discover, and upvote ideas that can grow into paid challenges.
+role: UX Designer
+timeline: "[TODO]"
+order: 4
+cover:
+  alt: Topcoder's My Challenges screen on a tablet, listing challenges with points, submission status, and review state
+  hint: The tablet shot of the My Challenges screen
+status: draft
+---
+import ImageSlot from '../../components/ImageSlot.astro';
+import Todo from '../../components/Todo.astro';
+
+{/*
+  Source: Kennedy's old Framer case study, kept close to her wording. Duplicated text and a section from
+  another project were removed.
+  Note: the screens say "TopCrowd" while the copy says "Topcoder". Confirm the name with Kennedy.
+*/}
+
+<Todo label="Kennedy: context">
+  Who was this for? Was it a Topcoder contract, freelance work, or a school project? When, and who else was on
+  the team? The screens say "TopCrowd" but the text says "Topcoder". Which name is right, and is it OK to show
+  publicly?
+</Todo>
+
+## Overview
+
+I worked as a UX Designer on a new feature aimed at increasing community engagement and expanding the platform's
+challenge pipeline. I designed **Ideas**, a community-driven space where users can submit, discover, and upvote
+ideas. The most-supported ideas surface and evolve into official challenges, creating a direct path from
+community input to paid opportunities.
+
+## Project goal
+
+Create a community-driven system that turns user-generated ideas into validated challenges, increasing engagement
+while expanding Topcoder's opportunity pipeline.
+
+## The problem
+
+Topcoder lacked a structured way for the community to contribute ideas and influence which challenges were
+created. Users could take part in existing challenges, but there was no clear path to propose, validate, or
+elevate new ideas. That limited engagement and slowed the growth of the challenge pipeline.
+
+## Discovery
+
+Discovery was intentionally lightweight because of team constraints, and because user feedback had already
+pointed to a clear opportunity: the community wanted more social interaction, and had no way to contribute beyond
+entering challenges. With limited resources, I validated the direction by analyzing existing engagement patterns
+and aligning with business goals around participation.
+
+<Todo label="Kennedy: the evidence">
+  What exactly was the "community request"? A forum thread, survey results, a support pattern? One concrete
+  example or quote makes this section believable.
+</Todo>
+
+## The approach
+
+I designed a lightweight feedback loop: users submit ideas, others discover and upvote them, and the most relevant
+ideas rise naturally. I defined the user flows and interaction patterns for submitting ideas, making them visible,
+and moving them into the challenge pipeline. The design balances flexibility for user-generated content with
+enough structure to keep ideas consistent and feasible as they become real opportunities.
+
+## An Ideas tab inside the dashboard
+
+<ImageSlot
+  folder="topcoder-ideas"
+  name="ideas-board"
+  alt="The Ideas board: idea cards with work-type tags, author, date, and upvote counts, with sort, filter, and New Idea controls"
+  hint="The flat Ideas board screen with the 'Your idea was posted successfully' toast"
+  wide
+/>
+
+I embedded Ideas directly into the existing dashboard so it felt like part of the workflow, not a separate
+product. I added a new navigation entry and a listing that lets users browse, filter by work type, sort by newest
+or votes, and switch between open and closed ideas. Upvotes signal demand and inform which ideas should become
+challenges. Reusing existing design patterns let me move quickly and focus on the end-to-end experience.
+
+## A submission flow that keeps quality high
+
+<ImageSlot
+  folder="topcoder-ideas"
+  name="new-idea-modal"
+  alt="The New Idea modal: a prompt to review existing ideas first, then step 1 title and category, and step 2 a rich-text description"
+  hint="The New Idea modal screen"
+  wide
+/>
+
+The submission flow balances easy contribution with high-quality, actionable ideas. To cut down on duplicate and
+low-value submissions, the modal first asks users to review existing ideas and upvote similar ones. Then two short
+steps capture what's needed: a title and work-type category, and a description.
+
+<Todo label="Kennedy: one decision">
+  Why a two-step modal instead of a full page? Did you test other versions? One sentence on a choice you made and
+  why makes this much stronger.
+</Todo>
+
+## The result
+
+Ideas added a new layer of community engagement by letting users contribute and validate ideas directly in the
+platform. Early internal feedback showed more interaction around idea discovery and voting. Long-term metrics
+weren't captured because of team changes.
+
+<ImageSlot
+  folder="topcoder-ideas"
+  name="ideas-laptop"
+  alt="The Ideas board shown on a laptop"
+  hint="The laptop shot of the Ideas board"
+  wide
+/>
+
+<Todo label="Kennedy: results and reflection">
+  Did it ship to real users, or stay internal? Then write 2–3 sentences of reflection: what you learned and what
+  you'd do next (e.g. how an idea actually becomes a challenge, or showing people their idea's status). Your old
+  draft repeated the result text here.
+</Todo>

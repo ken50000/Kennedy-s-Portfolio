@@ -1,0 +1,38 @@
+---
+/**
+ * Bento: puts images (or short blocks of text) side by side in a ruled grid on case study pages.
+ *
+ *   <Bento>
+ *     <ImageSlot folder="ani" name="final-feed" … />
+ *     <ImageSlot folder="ani" name="final-welcome" … />
+ *   </Bento>
+ *
+ * cols: how many across on wide screens (2 or 3). It stacks to one column on phones.
+ * wide: stretch across the full page width instead of just the text column.
+ */
+interface Props { cols?: 2 | 3; wide?: boolean }
+const { cols = 2, wide = false } = Astro.props;
+---
+
+<div class:list={['cs-bento', { wide }]} style={`--cols: ${cols}`}>
+  <slot />
+</div>
+
+<style>
+  .cs-bento {
+    display: grid;
+    grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
+    gap: 2px;
+    background: var(--line);
+    border: var(--rule);
+    margin: 2rem 0;
+  }
+  .cs-bento > :global(*) { background: var(--bg); padding: clamp(0.75rem, 2vw, 1.25rem); margin: 0; }
+  .cs-bento > :global(div > :first-child) { margin-top: 0; }
+  .cs-bento > :global(div > :last-child) { margin-bottom: 0; }
+  .cs-bento :global(.slot) { margin: 0; }
+  .cs-bento > :global(div .slot + .slot) { margin-top: 1rem; }
+  @media (max-width: 640px) {
+    .cs-bento { grid-template-columns: 1fr; }
+  }
+</style>

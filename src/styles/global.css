@@ -1,0 +1,88 @@
+/* Kennedy's portfolio: brutalist structure, Apple-style type.
+   Near-black canvas, hard 2px rules, zero radius, solid offset shadows, her red as the loud color.
+   Type: SF Pro + SF Mono on Apple devices; everywhere else Inter (optical sizes on, so big text uses
+   its Display cut) + JetBrains Mono. */
+
+@import '@fontsource-variable/inter/opsz.css';
+@import '@fontsource/jetbrains-mono/400.css';
+@import '@fontsource/jetbrains-mono/700.css';
+
+:root {
+  --bg: #151413;
+  --bg-elev: #1f1d1b;
+  --text: #faf8f3;
+  --muted: #a9a59d;          /* 7.6:1 on --bg */
+  --line: #faf8f3;           /* brutalist rules are full strength */
+  --line-soft: #3a3633;
+  --line-strong: #4a4641;
+  --link: #5aaeff;           /* 7.4:1 on --bg */
+  --accent: #e2332b;         /* the red wall in her portrait */
+  --accent-ink: #faf8f3;     /* text on red: 4.6:1 */
+  --red-hot: #ff4b3e;        /* 5.4:1 on --bg; small red text on dark */
+  --red-deep: #8f1c17;
+  /* Bright on the left, burning down to oxblood. Keep small text on the darker end. */
+  --grad-red: linear-gradient(115deg, #ff4b3e 0%, #e2332b 35%, #b5251e 65%, #6b130f 100%);
+  --grad-glow: radial-gradient(70% 60% at 50% 100%, rgb(226 51 43 / 0.42), rgb(226 51 43 / 0.08) 55%, transparent 75%);
+  --warn: #f5b942;           /* TODO and placeholder markers */
+
+  --font-sans: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Inter Variable', system-ui, 'Segoe UI', sans-serif;
+  --font-display: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter Variable', system-ui, 'Segoe UI', sans-serif;
+  --font-mono: 'SF Mono', ui-monospace, 'JetBrains Mono', Menlo, monospace;
+
+  --rule: 2px solid var(--line);
+  --shadow: 8px 8px 0 var(--accent);
+
+  --gutter: clamp(16px, 4vw, 48px);
+  --measure: 760px;
+  --wide: 1280px;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { background: var(--bg); color: var(--text); -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: 1.0625rem;      /* 17px, Apple's body size */
+  line-height: 1.55;
+  letter-spacing: -0.011em;
+  background: transparent;  /* html paints --bg; the sound-wave layer sits between them */
+  color: var(--text);
+  font-optical-sizing: auto;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+::selection { background: var(--accent); color: var(--accent-ink); }
+
+a { color: var(--link); text-underline-offset: 0.2em; }
+a:hover { text-decoration-thickness: 2px; }
+:focus-visible { outline: 3px solid var(--link); outline-offset: 3px; }
+
+h1, h2, h3 { font-family: var(--font-display); line-height: 1.04; letter-spacing: -0.035em; font-weight: 800; text-wrap: balance; }
+h2 { font-size: clamp(2rem, 4.5vw, 3.25rem); margin: 4rem 0 1rem; }
+h3 { font-size: 1.4rem; letter-spacing: -0.02em; font-weight: 700; margin: 2.25rem 0 0.75rem; }
+p { margin: 0 0 1rem; }
+img { max-width: 100%; height: auto; }
+code { font-family: var(--font-mono); font-size: 0.9em; }
+
+.mono { font-family: var(--font-mono); font-size: 0.8rem; letter-spacing: 0; }
+.muted { color: var(--muted); }
+
+.container { width: min(100% - 2 * var(--gutter), var(--wide)); margin-inline: auto; }
+.prose { width: min(100% - 2 * var(--gutter), var(--measure)); margin-inline: auto; }
+
+/* Full-bleed red gradient band behind a block that lives inside a narrow container. */
+.bleed-red {
+  color: var(--accent-ink);
+  border-image: var(--grad-red) fill 0 / / 0 50vw;
+}
+/* Page titles on inner pages: huge cream type on a red band. */
+.page-title { font-size: clamp(3.5rem, 13vw, 10rem); letter-spacing: -0.055em; line-height: 0.9; margin: 0 0 2.5rem; padding-block: clamp(1.5rem, 4vw, 3rem); }
+
+.skip-link { position: absolute; left: -9999px; top: 0; background: var(--text); color: var(--bg); padding: 0.5rem 1rem; z-index: 10; }
+.skip-link:focus { left: 1rem; top: 1rem; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+}

@@ -1,0 +1,28 @@
+---
+import fs from 'node:fs';
+import Base from '../layouts/Base.astro';
+import Todo from '../components/Todo.astro';
+import { url } from '../site';
+
+// Drop the final résumé at public/resume.pdf and this page links to it automatically.
+const hasPdf = fs.existsSync('public/resume.pdf');
+---
+
+<Base title="Résumé">
+  <div class="prose page">
+    <h1 class="page-title bleed-red">Résumé</h1>
+    {hasPdf ? (
+      <p><a href={url('/resume.pdf')} class="big">Download my résumé (PDF) ↓</a></p>
+    ) : (
+      <Todo label="Kennedy: résumé">
+        Export your final résumé as a PDF, name it <code>resume.pdf</code>, and put it in the <code>public/</code> folder.
+        A draft is waiting for your review in the shared résumé doc Nacho sent you.
+      </Todo>
+    )}
+  </div>
+</Base>
+
+<style>
+  .page { padding-top: 3rem; min-height: 50vh; }
+  .big { font-size: 1.5rem; }
+</style>
