@@ -4,6 +4,16 @@ Newest entry on top. Claude Code: read the latest entry at the start of every se
 
 ---
 
+## 2026-11-05 (later): Sample images
+**Changed**
+- Moved this site into Kennedy's own repo (ken50000/Kennedy-s-Portfolio), replacing the old portfolio.
+- Added tagged sample mockups for all 16 empty image slots in `src/images/_samples/`. Each is marked "SAMPLE
+  IMAGE", invented, abstract, and has a "Sample image. Replace with: …" note under it. A real image at
+  `src/images/<folder>/<name>.*` replaces its sample automatically. `npm run status` still lists every slot as open.
+  Delete `src/images/_samples/` to go back to the yellow placeholders.
+
+---
+
 ## 2026-11-05: Moved content over from the old portfolio
 **Changed**
 - New case study: Workforce Planning Portal (`workforce-planning.mdx`), public, second on the home page. Text from

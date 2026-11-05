@@ -30,14 +30,24 @@ const files = import.meta.glob<{ default: ImageMetadata }>(
 const match = Object.entries(files).find(([path]) =>
   new RegExp(`^/src/images/${folder}/${name}\\.(webp|jpe?g|png|avif)$`, 'i').test(path)
 );
-const img = match?.[1].default;
+const real = match?.[1].default;
+
+// Until the real image exists, show a tagged sample mockup from src/images/_samples/ if there is one.
+// Samples are invented examples of what fits the slot. `npm run status` still lists the slot as open.
+// Delete src/images/_samples/ to go back to the yellow "Image needed" boxes.
+const sampleMatch = real ? undefined : Object.entries(files).find(([path]) =>
+  new RegExp(`^/src/images/_samples/${folder}/${name}\\.(webp|jpe?g|png|avif)$`, 'i').test(path)
+);
+const sample = sampleMatch?.[1].default;
+const img = real ?? sample;
+const shownAlt = sample ? `Sample placeholder, not Kennedy's work: ${alt}` : alt;
 ---
 
 <figure class:list={['slot', { wide }]}>
   {img ? (
     <Image
       src={img}
-      alt={alt}
+      alt={shownAlt}
       widths={[480, 960, 1440, 2048].filter((w) => w <= img.width)}
       sizes={wide ? '(min-width: 1200px) 1200px, 100vw' : '(min-width: 860px) 860px, 100vw'}
       loading="lazy"
@@ -50,6 +60,7 @@ const img = match?.[1].default;
       <code class="ph-path">src/images/{folder}/{name}.jpg</code>
     </div>
   )}
+  {sample && name !== 'cover' && <figcaption class="sample-note">Sample image. Replace with: {hint}</figcaption>}
   {caption && <figcaption>{caption}</figcaption>}
 </figure>
 
@@ -58,6 +69,7 @@ const img = match?.[1].default;
   .slot.wide { margin-inline: calc(50% - min(50vw - var(--gutter), 600px)); }
   .slot :global(img) { width: 100%; height: auto; display: block; }
   figcaption { font-family: var(--font-mono); font-size: 0.8rem; color: var(--muted); margin-top: 0.75rem; }
+  .sample-note { color: var(--warn); }
   .placeholder {
     width: 100%;
     border: 2px dashed var(--line-strong);
