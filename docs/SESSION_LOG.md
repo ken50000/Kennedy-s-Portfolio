@@ -4,6 +4,21 @@ Newest entry on top. Claude Code: read the latest entry at the start of every se
 
 ---
 
+## 2026-11-05 (evening): Imported Wix case studies
+**Changed**
+- Three new case studies from her Wix site (campbellkennedy09.wixsite.com/my-site-1): Texstyle, Fitness Bingo,
+  and Walmart Intake Form Redesign (her 2024 PM internship). Text is a close rewrite of the Wix pages, because the
+  originals could only be read as summaries. Placed after the existing four on the home page.
+
+**Open**
+- Images are still on Wix and couldn't be downloaded here. Each slot's hint says which Wix image goes there.
+- New Todos on each page: context and her part, wording check, final product, reflection; for Walmart, a
+  confidentiality check with Nacho and blurring screens. The Walmart Wix card used a stock photo; don't reuse it.
+- Wix tiles with no write-up (Skate Sponsorship, Editorial Work, Jump On, Feed the Cat, Ripple Delete) weren't
+  imported. Ask her whether any belong on the site.
+
+---
+
 ## 2026-11-05 (later): Sample images
 **Changed**
 - Moved this site into Kennedy's own repo (ken50000/Kennedy-s-Portfolio), replacing the old portfolio.
