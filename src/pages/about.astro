@@ -29,9 +29,6 @@ import Todo from '../components/Todo.astro';
           animanga social app.
         </p>
         <p>Outside of design, I'm a sponsored skateboarder and creator who loves exploring new ways to stay creative.</p>
-        <Todo label="Kennedy: skateboarding">
-          Add one line about who sponsors you or what you create (videos? art?), and a link if you want people to see it.
-        </Todo>
         <Todo label="Kennedy: music">
           Nacho mentioned you produce music, and the home page now lists "music production" under Off the clock. Is that right? If so, add
           one line here about what you make, and a link if you want people to listen.
@@ -98,6 +95,21 @@ import Todo from '../components/Todo.astro';
         <ul class="tags">
           {['Figma', 'Figma Make', 'Adobe Creative Suite', 'Miro', 'Jira', 'Confluence', 'Canva', 'HTML / CSS', 'VS Code', 'GitHub'].map((t) => <li>{t}</li>)}
         </ul>
+
+        <!-- From her Wix site's "Skate Sponsorship (2021 – current)" tile, 2026-11-05. Kept small on purpose. -->
+        <h2>Skateboarding</h2>
+        <p>I've been a sponsored skateboarder since 2021.</p>
+        <ImageSlot
+          folder="about"
+          name="skate"
+          alt="Kennedy skateboarding"
+          hint="A photo or video still of you skating"
+          ratio="4 / 3"
+        />
+        <Todo label="Kennedy: skateboarding">
+          Who sponsors you, and what do you create (videos? art?)? Add a link if you want people to see it. If skating
+          shapes how you design, add one line about that in your own words.
+        </Todo>
       </div>
     </div>
   </div>
