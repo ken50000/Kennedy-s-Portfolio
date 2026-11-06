@@ -11,6 +11,7 @@ const caseStudies = defineCollection({
     role: z.string(),
     timeline: z.string(),
     team: z.string().optional(),
+    category: z.string().optional(),   // short label for the Work carousel, e.g. "Mobile · Fitness app"
     tools: z.string().optional(),
     order: z.number(),                 // position on the home page (1 = first)
     cover: z.object({ alt: z.string(), hint: z.string() }),

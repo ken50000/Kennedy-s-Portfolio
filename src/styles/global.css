@@ -83,6 +83,15 @@ code { font-family: var(--font-mono); font-size: 0.9em; }
 .skip-link { position: absolute; left: -9999px; top: 0; background: var(--text); color: var(--bg); padding: 0.5rem 1rem; z-index: 10; }
 .skip-link:focus { left: 1rem; top: 1rem; }
 
+/* Pages cross-fade into each other (supported browsers only). The Work carousel's expanding card fades into the
+   case study this way. */
+@view-transition { navigation: auto; }
+::view-transition-old(root), ::view-transition-new(root) { animation-duration: 0.4s; }
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root), ::view-transition-new(root) { animation: none; }
 }

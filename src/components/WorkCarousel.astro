@@ -1,0 +1,612 @@
+---
+// Work showroom: an immersive 3D project carousel.
+// One featured project in the center; neighbors recede on either side with perspective, rotation and scale.
+// Navigate with arrows, drag/swipe, trackpad or wheel (sideways, or up/down while the carousel has focus),
+// keyboard arrows, or the numbered pagination. Selecting the featured project expands it toward the viewer and
+// opens its case study. Without JavaScript it falls back to a plain horizontal row of links.
+// With "reduce motion" on: no 3D, no spin, no expand animation.
+import { Image } from 'astro:assets';
+import { url } from '../site';
+
+interface Study {
+  id: string;
+  data: {
+    title: string; summary: string; role: string; timeline: string; category?: string; status: string;
+    cover: { alt: string };
+    cinematic?: { accent: string; accentHot: string; accentInk: string };
+  };
+}
+interface Props { studies: Study[] }
+const { studies } = Astro.props;
+
+const files = import.meta.glob<{ default: ImageMetadata }>('/src/images/**/cover.{webp,jpg,jpeg,png,avif}', { eager: true });
+const coverFor = (id: string) => {
+  const find = (dir: string) =>
+    Object.entries(files).find(([p]) => new RegExp(`^/src/images/${dir}/cover\\.(webp|jpe?g|png|avif)$`, 'i').test(p))?.[1].default;
+  const real = find(id);
+  if (real) return { img: real, sample: false };
+  const sample = find(`_samples/${id}`);
+  return sample ? { img: sample, sample: true } : null;
+};
+const missing = (v?: string) => !v || /todo/i.test(v);
+const pad = (n: number) => String(n).padStart(2, '0');
+const total = studies.length;
+
+const slides = studies.map((s, i) => {
+  const c = s.data.cinematic;
+  return {
+    id: s.id,
+    n: pad(i + 1),
+    href: url(`/work/${s.id}/`),
+    d: s.data,
+    cover: coverFor(s.id),
+    locked: !!c,
+    accent: c?.accent ?? '#e2332b',
+    hot: c?.accentHot ?? '#ff4b3e',
+    ink: c?.accentInk ?? '#faf8f3',
+  };
+});
+---
+
+<div class="wc" data-count={total} style={`--wc-accent:${slides[0]?.accent};--wc-hot:${slides[0]?.hot}`}>
+  <div class="wc-bg" aria-hidden="true">
+    <div class="wc-blob"></div>
+    <svg class="wc-rings" viewBox="-500 -500 1000 1000" fill="none" stroke="currentColor">
+      {[90, 160, 230, 300, 370, 440].map((r, k) => (
+        <circle r={r} stroke-width={k % 2 ? 1 : 2} stroke-dasharray={k % 3 === 2 ? '4 14' : undefined} />
+      ))}
+      <path d="M-480 0H480M0 -480V480" stroke-width="1" />
+      <circle class="wc-dot" cx="0" cy="-440" r="7" />
+    </svg>
+    <svg class="wc-wire" viewBox="0 0 1600 700" preserveAspectRatio="xMidYMid slice" fill="none" stroke="currentColor">
+      <path d="M0 110H1600M0 590H1600M120 0V700M1480 0V700" stroke-width="1" />
+      <rect x="60" y="60" width="300" height="190" stroke-width="1" />
+      <rect x="1240" y="450" width="300" height="190" stroke-width="1" />
+      <path d="M360 250L560 330M1240 450L1040 370" stroke-width="1" stroke-dasharray="6 9" />
+    </svg>
+  </div>
+
+  <div
+    class="wc-stage"
+    role="region"
+    aria-roledescription="carousel"
+    aria-label="Projects. Use the left and right arrow keys to browse, and Enter to open."
+    tabindex="0"
+  >
+    <ul class="wc-track">
+      {slides.map((s, i) => (
+        <li
+          class="wc-slide"
+          data-i={i}
+          aria-roledescription="slide"
+          aria-label={`${i + 1} of ${total}: ${s.d.title}`}
+          style={`--accent:${s.accent};--hot:${s.hot};--ink:${s.ink}`}
+          data-accent={s.accent}
+          data-hot={s.hot}
+        >
+          <a class="wc-card" href={s.href} draggable="false">
+            <div class="wc-media">
+              {s.cover ? (
+                <Image
+                  src={s.cover.img}
+                  alt={s.cover.sample ? `Sample placeholder, not Kennedy's work: ${s.d.cover.alt}` : s.d.cover.alt}
+                  widths={[480, 960, 1440].filter((w) => w <= s.cover!.img.width)}
+                  sizes="(min-width: 860px) 62vw, 82vw"
+                  loading={i < 3 ? 'eager' : 'lazy'}
+                  decoding="async"
+                  draggable="false"
+                />
+              ) : (
+                <div class="wc-poster" aria-hidden="true">
+                  <span class="wc-poster-n">{s.n}</span>
+                  <span class="wc-poster-t">{s.d.title}</span>
+                  <svg viewBox="0 0 200 200" fill="none" stroke="currentColor"><circle cx="100" cy="100" r="96" /><circle cx="100" cy="100" r="60" stroke-dasharray="3 7" /></svg>
+                </div>
+              )}
+              {s.locked && <span class="wc-lock mono">Passcode</span>}
+            </div>
+            <div class="wc-cap">
+              <span class="mono">{s.n}</span>
+              <span class="wc-cap-t">{s.d.title}</span>
+              <span class="wc-cap-go mono">View project ↗</span>
+            </div>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
+
+  <div class="wc-info container">
+    <div class="wc-panels">
+      {slides.map((s, i) => (
+        <article class="wc-panel" data-i={i} hidden={i !== 0} style={`--hot:${s.hot};--accent:${s.accent};--ink:${s.ink}`}>
+          <p class="mono wc-kicker wc-rise" style="--k:0">
+            <span>{s.n} / {pad(total)}</span>
+            {s.d.category && <span>{s.d.category}</span>}
+            {s.locked && <span>Under NDA</span>}
+          </p>
+          <h3 class="wc-title"><span class="wc-mask"><span>{s.d.title}</span></span></h3>
+          <p class="wc-summary wc-rise" style="--k:1">{s.d.summary}</p>
+          <dl class="wc-meta wc-rise" style="--k:2">
+            <div><dt class="mono">Role</dt><dd class:list={{ 'is-missing': missing(s.d.role) }}>{missing(s.d.role) ? 'To be added' : s.d.role}</dd></div>
+            <div><dt class="mono">Timeline</dt><dd class:list={{ 'is-missing': missing(s.d.timeline) }}>{missing(s.d.timeline) ? 'To be added' : s.d.timeline}</dd></div>
+            {s.d.category && <div><dt class="mono">Category</dt><dd>{s.d.category}</dd></div>}
+          </dl>
+          <a class="wc-cta wc-rise" style="--k:3" href={s.href}>
+            {s.locked ? 'Open the presentation' : 'Explore the case study'} <span aria-hidden="true">→</span>
+          </a>
+        </article>
+      ))}
+    </div>
+
+    <div class="wc-controls">
+      <div class="wc-arrows">
+        <button class="wc-arrow wc-prev" type="button" aria-label="Previous project">←</button>
+        <p class="wc-count mono" aria-hidden="true"><b>01</b> / {pad(total)}</p>
+        <button class="wc-arrow wc-next" type="button" aria-label="Next project">→</button>
+      </div>
+      <ol class="wc-dots">
+        {slides.map((s, i) => (
+          <li>
+            <button type="button" data-i={i} aria-label={`Show project ${i + 1}: ${s.d.title}`} aria-current={i === 0 ? 'true' : undefined}>
+              <span class="mono">{s.n}</span>
+            </button>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </div>
+  <p class="wc-live" aria-live="polite"></p>
+</div>
+
+<style is:global>
+  @property --wc-accent { syntax: '<color>'; inherits: true; initial-value: #e2332b; }
+  @property --wc-hot { syntax: '<color>'; inherits: true; initial-value: #ff4b3e; }
+
+  .wc {
+    position: relative; isolation: isolate; overflow: hidden;
+    padding-block: clamp(1rem, 2.5vw, 2rem) clamp(2.5rem, 6vw, 4.5rem);
+    border-bottom: var(--rule);
+    transition: --wc-accent 1s ease, --wc-hot 1s ease;
+  }
+
+  /* ---------- background: glow, rotating rings, wireframe (parallax) ---------- */
+  .wc-bg { position: absolute; inset: 0; z-index: -1; pointer-events: none; }
+  .wc-blob {
+    position: absolute; left: 50%; top: 38%; width: min(70vw, 900px); aspect-ratio: 1.6; translate: -50% -50%;
+    background: radial-gradient(closest-side, color-mix(in srgb, var(--wc-accent) 55%, transparent), transparent);
+    filter: blur(30px); opacity: 0.55;
+    transition: transform 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+    transform: translateX(var(--wc-par, 0px));
+  }
+  .wc-rings {
+    position: absolute; left: 50%; top: 38%; width: min(120vw, 1500px); translate: -50% -50%;
+    color: color-mix(in srgb, var(--wc-accent) 45%, transparent); opacity: 0.5;
+    transform: rotate(var(--wc-spin, 0deg)) scale(var(--wc-pulse, 1));
+    transition: transform 1.4s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .wc-rings .wc-dot { fill: var(--wc-accent); stroke: none; }
+  .wc-wire {
+    position: absolute; inset: 0; width: 100%; height: 100%; color: var(--line-strong); opacity: 0.6;
+    transform: translateX(calc(var(--wc-par, 0px) * -0.6));
+    transition: transform 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  /* ---------- stage + slides: base (no JS) = a horizontal row ---------- */
+  .wc-stage { position: relative; outline: none; }
+  .wc-stage:focus-visible { outline: 3px solid var(--link); outline-offset: -3px; }
+  .wc-track {
+    list-style: none; margin: 0; padding: 0 var(--gutter);
+    display: flex; gap: 1.5rem; overflow-x: auto; scroll-snap-type: x mandatory;
+  }
+  .wc-slide { flex: 0 0 min(78vw, 720px); scroll-snap-align: center; }
+  .wc-card { display: block; color: var(--text); text-decoration: none; }
+  .wc-media {
+    position: relative; aspect-ratio: 16 / 10; overflow: hidden; background: var(--bg-elev);
+    border: var(--rule);
+  }
+  .wc-media img { display: block; width: 100%; height: 100%; object-fit: cover; user-select: none; -webkit-user-drag: none; }
+  .wc-lock {
+    position: absolute; left: 0.75rem; top: 0.75rem; z-index: 1; padding: 0.25rem 0.55rem;
+    background: var(--bg); color: var(--hot); border: 1px solid currentColor; font-size: 0.7rem;
+  }
+  .wc-poster {
+    position: absolute; inset: 0; display: grid; place-content: end start; padding: clamp(1rem, 3vw, 2rem);
+    background:
+      radial-gradient(80% 90% at 85% 15%, color-mix(in srgb, var(--accent) 45%, transparent), transparent 70%),
+      linear-gradient(160deg, #22201e, #121110);
+    color: var(--text); overflow: hidden;
+  }
+  .wc-poster svg { position: absolute; right: -12%; top: -18%; width: 62%; color: color-mix(in srgb, var(--accent) 70%, transparent); }
+  .wc-poster-n { font-family: var(--font-mono); font-size: 0.85rem; color: var(--hot); }
+  .wc-poster-t { font-family: var(--font-display); font-weight: 800; letter-spacing: -0.055em; line-height: 0.88; font-size: clamp(2.2rem, 6vw, 5.5rem); max-width: 10ch; }
+  .wc-cap { display: flex; align-items: baseline; gap: 0.75rem; padding: 0.7rem 0.1rem 0; }
+  .wc-cap .mono { color: var(--hot); }
+  .wc-cap-t { font-family: var(--font-display); font-weight: 800; letter-spacing: -0.03em; font-size: 1.15rem; }
+  .wc-cap-go { margin-left: auto; color: var(--muted) !important; }
+  .wc-info, .wc-live { display: none; }
+
+  /* ---------- enhanced: 3D showroom ---------- */
+  .wc.is-ready .wc-stage { height: var(--wc-h, 32rem); perspective: 1700px; perspective-origin: 50% 40%; touch-action: pan-y; cursor: grab; user-select: none; }
+  .wc.is-ready .wc-stage.is-dragging { cursor: grabbing; }
+  .wc.is-ready .wc-track { display: block; position: absolute; inset: 0; padding: 0; overflow: visible; transform-style: preserve-3d; pointer-events: none; }
+  .wc.is-ready .wc-slide {
+    position: absolute; left: 50%; top: 48%; width: var(--wc-w, 50vw);
+    transform-style: preserve-3d; will-change: transform, opacity;
+    transform: translate(-50%, -50%) translate3d(var(--x, 0px), 0, var(--z, 0px)) rotateY(var(--ry, 0deg)) scale(var(--s, 1));
+    opacity: var(--o, 1);
+    transition: transform 0.95s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.6s ease;
+  }
+  .wc.is-ready .wc-stage.is-dragging .wc-slide { transition: none; }
+  .wc.is-ready .wc-card {
+    transform: rotateX(var(--tx, 0deg)) rotateY(var(--ty, 0deg));
+    transition: transform 0.35s ease;
+  }
+  .wc.is-ready .wc-media {
+    box-shadow: 0 40px 80px rgb(0 0 0 / 0.55);
+    transition: box-shadow 0.6s ease, border-color 0.6s ease;
+  }
+  /* masked reveal: neighbors are cropped in, the featured project opens to full frame */
+  .wc.is-ready .wc-media img, .wc.is-ready .wc-poster {
+    clip-path: inset(var(--clip, 0%) round 0);
+    transform: scale(calc(1 + var(--clip-n, 0) * 0.08));
+    transition: clip-path 0.9s cubic-bezier(0.22, 1, 0.36, 1), transform 1.1s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .wc.is-ready .wc-media::after { /* depth dimming */
+    content: ''; position: absolute; inset: 0; background: #0b0a0a; opacity: var(--dim, 0); pointer-events: none;
+    transition: opacity 0.6s ease;
+  }
+  .wc.is-ready .wc-slide.is-active .wc-media { box-shadow: 0 50px 100px rgb(0 0 0 / 0.6), 12px 12px 0 var(--accent); }
+  .wc.is-ready .wc-slide:not(.is-active) .wc-cap { opacity: 0.55; }
+  .wc.is-ready .wc-slide.is-active .wc-card:hover .wc-cap-go,
+  .wc.is-ready .wc-slide.is-active .wc-card:focus-visible .wc-cap-go { color: var(--hot) !important; }
+  /* The track's own (invisible) plane sits in front of the receding cards, so it must not catch clicks. */
+  .wc.is-ready .wc-slide { pointer-events: none; }
+  .wc.is-ready .wc-slide.is-active { pointer-events: auto; }
+  .wc.is-ready .wc-slide.is-near { pointer-events: auto; cursor: pointer; }
+
+  /* info panel */
+  .wc.is-ready .wc-info {
+    display: grid; grid-template-columns: minmax(0, 1fr) minmax(15rem, 21rem); gap: 2px;
+    background: var(--line); border: var(--rule); margin-top: clamp(0.5rem, 2vw, 1.5rem);
+  }
+  .wc-info > * { background: var(--bg); padding: clamp(1.1rem, 2.5vw, 1.9rem); }
+  .wc-kicker { display: flex; flex-wrap: wrap; gap: 0.4rem 1rem; margin: 0 0 0.6rem; color: var(--hot); text-transform: uppercase; letter-spacing: 0.06em; }
+  .wc-title { margin: 0; font-size: clamp(2.4rem, 5.5vw, 4.75rem); letter-spacing: -0.06em; line-height: 0.9; }
+  .wc-mask { display: block; overflow: hidden; padding-bottom: 0.08em; margin-bottom: -0.08em; }
+  .wc-mask > span { display: block; }
+  .wc-summary { max-width: 56ch; margin: 0.85rem 0 1.1rem; font-size: 1.05rem; color: var(--text); }
+  .wc-meta { display: flex; flex-wrap: wrap; margin: 0 0 1.4rem; padding: 1px 0 0 1px; }
+  .wc-meta > div { padding: 0.55rem 0.9rem; border: 1px solid var(--line-soft); margin: -1px 0 0 -1px; }
+  .wc-meta dt { color: var(--hot); font-size: 0.7rem; }
+  .wc-meta dd { margin: 0.1rem 0 0; font-weight: 600; font-size: 0.95rem; }
+  .wc-meta dd.is-missing { color: var(--warn); }
+  .wc-cta {
+    display: inline-flex; align-items: center; gap: 0.6rem;
+    font-weight: 700; color: var(--ink); background: var(--accent); text-decoration: none;
+    border: var(--rule); padding: 0.75rem 1.2rem;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .wc-cta:hover { transform: translate(-3px, -3px); box-shadow: 6px 6px 0 var(--text); }
+  .wc-cta span { transition: transform 0.2s ease; }
+  .wc-cta:hover span { transform: translateX(4px); }
+
+  /* type animates into place when the featured project changes */
+  .wc-panel.is-entering .wc-mask > span { animation: wc-up 0.85s cubic-bezier(0.22, 1, 0.36, 1) both; }
+  .wc-panel.is-entering .wc-rise { animation: wc-rise 0.7s cubic-bezier(0.22, 1, 0.36, 1) both; animation-delay: calc(0.12s + var(--k, 0) * 0.07s); }
+  @keyframes wc-up { from { transform: translateY(105%); } to { transform: none; } }
+  @keyframes wc-rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+
+  /* controls */
+  .wc-controls { display: flex; flex-direction: column; justify-content: space-between; gap: 1.25rem; }
+  .wc-arrows { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+  .wc-arrow {
+    width: 3.5rem; height: 3.5rem; font-size: 1.4rem; line-height: 1; cursor: pointer;
+    color: var(--text); background: var(--bg); border: var(--rule); border-radius: 0;
+    transition: background 0.2s ease, color 0.2s ease, transform 0.15s ease;
+  }
+  .wc-arrow:hover:not(:disabled) { background: var(--wc-accent); color: var(--accent-ink); }
+  .wc-arrow:active:not(:disabled) { transform: scale(0.94); }
+  .wc-arrow:disabled { opacity: 0.3; cursor: default; }
+  .wc-count { margin: 0; font-size: 1rem; color: var(--muted); }
+  .wc-count b { font-family: var(--font-display); font-size: 2.2rem; letter-spacing: -0.04em; color: var(--text); font-weight: 800; }
+  .wc-dots { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(2.4rem, 1fr)); gap: 4px; }
+  .wc-dots button {
+    position: relative; width: 100%; padding: 0.55rem 0; cursor: pointer; overflow: hidden;
+    color: var(--muted); background: var(--bg); border: 1px solid var(--line-soft); border-radius: 0;
+  }
+  .wc-dots button::after { content: ''; position: absolute; left: 0; bottom: 0; height: 3px; width: 100%; background: var(--wc-hot); transform: scaleX(0); transform-origin: left; transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1); }
+  .wc-dots button:hover { color: var(--text); }
+  .wc-dots button[aria-current='true'] { color: var(--text); }
+  .wc-dots button[aria-current='true']::after { transform: scaleX(1); }
+  .wc.is-ready .wc-live { display: block; }
+  .wc-live { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+  /* expand-to-case-study overlay */
+  .wc-expand { position: fixed; z-index: 100; overflow: hidden; pointer-events: none; background: var(--bg); border: var(--rule); }
+  .wc-expand img, .wc-expand .wc-poster { width: 100%; height: 100%; object-fit: cover; clip-path: none !important; transform: none !important; }
+  .wc-expand-wash { position: absolute; inset: 0; background: var(--bg); opacity: 0; }
+  .wc.is-leaving .wc-stage, .wc.is-leaving .wc-info { transition: opacity 0.45s ease, transform 0.6s ease; opacity: 0.15; transform: scale(0.97); }
+
+  @media (max-width: 860px) {
+    .wc.is-ready .wc-info { grid-template-columns: 1fr; }
+    .wc-controls { flex-direction: column-reverse; }
+    .wc-title { font-size: clamp(2.4rem, 12vw, 4rem); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .wc.is-ready .wc-slide { transform: translate(-50%, -50%) translate3d(var(--x, 0px), 0, 0) scale(var(--s, 1)); }
+    .wc-rings, .wc-wire, .wc-blob { transform: none !important; }
+    .wc-panel.is-entering .wc-mask > span, .wc-panel.is-entering .wc-rise { animation: none; }
+  }
+</style>
+
+<script>
+  const root = document.querySelector<HTMLElement>('.wc');
+  if (root) initCarousel(root);
+
+  function initCarousel(root: HTMLElement) {
+    const stage = root.querySelector<HTMLElement>('.wc-stage')!;
+    const slides = [...root.querySelectorAll<HTMLElement>('.wc-slide')];
+    const panels = [...root.querySelectorAll<HTMLElement>('.wc-panel')];
+    const dots = [...root.querySelectorAll<HTMLButtonElement>('.wc-dots button')];
+    const prev = root.querySelector<HTMLButtonElement>('.wc-prev')!;
+    const next = root.querySelector<HTMLButtonElement>('.wc-next')!;
+    const count = root.querySelector<HTMLElement>('.wc-count b')!;
+    const live = root.querySelector<HTMLElement>('.wc-live')!;
+    const n = slides.length;
+    if (!n) return;
+
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const finePointer = matchMedia('(hover: hover) and (pointer: fine)').matches;
+    const KEY = 'kc-work-active';
+    const store = {
+      get(k: string) { try { return sessionStorage.getItem(k); } catch { return null; } },
+      set(k: string, v: string) { try { sessionStorage.setItem(k, v); } catch { /* private mode */ } },
+      del(k: string) { try { sessionStorage.removeItem(k); } catch { /* ignore */ } },
+    };
+
+    let active = 0;
+    let spacing = 400;
+    let dragOffset = 0;
+
+    // Size the stage from the card width (cards are 16:10 plus a caption).
+    function measure() {
+      const vw = root.clientWidth;
+      const small = vw < 700;
+      const w = Math.min(small ? vw * 0.8 : vw * 0.5, 780);
+      spacing = w * (small ? 0.86 : 0.74);
+      root.style.setProperty('--wc-w', `${w}px`);
+      root.style.setProperty('--wc-h', `${w / 1.6 + (small ? 90 : 120)}px`);
+      render(active);
+    }
+
+    // Place every slide for a (possibly fractional, while dragging) position.
+    function render(pos: number) {
+      const small = root.clientWidth < 700;
+      slides.forEach((el, i) => {
+        const d = i - pos;
+        const ad = Math.abs(d);
+        const c = Math.max(-2, Math.min(2, d));
+        el.style.setProperty('--x', `${d * spacing}px`);
+        el.style.setProperty('--z', `${-Math.min(ad, 3) * (small ? 160 : 260)}px`);
+        el.style.setProperty('--ry', `${reduce ? 0 : -c * (small ? 16 : 26)}deg`);
+        el.style.setProperty('--s', `${1 - Math.min(ad, 3) * 0.09}`);
+        el.style.setProperty('--o', `${ad > 2.4 ? Math.max(0, 1 - (ad - 2.4) / 0.6) : 1}`);
+        el.style.setProperty('--dim', `${Math.min(ad, 2) * 0.32}`);
+        el.style.setProperty('--clip', `${Math.min(ad, 1) * 7}%`);
+        el.style.setProperty('--clip-n', `${Math.min(ad, 1)}`);
+        el.style.zIndex = String(100 - Math.round(ad * 10));
+      });
+      // Background moves with the carousel: rings turn, glow and wireframe drift (parallax).
+      root.style.setProperty('--wc-spin', `${pos * -24}deg`);
+      root.style.setProperty('--wc-par', `${(pos - (n - 1) / 2) * -18}px`);
+    }
+
+    function setActive(i: number, opts: { focus?: boolean; silent?: boolean } = {}) {
+      const target = Math.max(0, Math.min(n - 1, i));
+      const changed = target !== active;
+      active = target;
+      dragOffset = 0;
+      render(active);
+      slides.forEach((el, k) => {
+        const d = Math.abs(k - active);
+        el.classList.toggle('is-active', k === active);
+        el.classList.toggle('is-near', d === 1);
+        el.setAttribute('aria-hidden', d === 0 ? 'false' : 'true');
+        el.querySelector('a')!.tabIndex = k === active ? 0 : -1;
+      });
+      const s = slides[active];
+      root.style.setProperty('--wc-accent', s.dataset.accent || '#e2332b');
+      root.style.setProperty('--wc-hot', s.dataset.hot || '#ff4b3e');
+      panels.forEach((p, k) => {
+        const on = k === active;
+        if (on && p.hidden) {
+          p.hidden = false;
+          p.classList.remove('is-entering');
+          void p.offsetWidth;
+          p.classList.add('is-entering');
+        } else if (!on) {
+          p.hidden = true;
+        }
+      });
+      dots.forEach((b, k) => (k === active ? b.setAttribute('aria-current', 'true') : b.removeAttribute('aria-current')));
+      count.textContent = String(active + 1).padStart(2, '0');
+      prev.disabled = active === 0;
+      next.disabled = active === n - 1;
+      if (changed && !opts.silent) {
+        live.textContent = `Project ${active + 1} of ${n}: ${s.getAttribute('aria-label')?.split(': ').slice(1).join(': ')}`;
+        if (!reduce) {
+          root.style.setProperty('--wc-pulse', '1.04');
+          setTimeout(() => root.style.setProperty('--wc-pulse', '1'), 380);
+        }
+      }
+      store.set(KEY, String(active));
+    }
+
+    // Arrows, pagination
+    prev.addEventListener('click', () => setActive(active - 1));
+    next.addEventListener('click', () => setActive(active + 1));
+    dots.forEach((b) => b.addEventListener('click', () => setActive(Number(b.dataset.i))));
+
+    // Keyboard (when the carousel has focus)
+    stage.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight') { e.preventDefault(); setActive(active + 1); }
+      else if (e.key === 'ArrowLeft') { e.preventDefault(); setActive(active - 1); }
+      else if (e.key === 'Home') { e.preventDefault(); setActive(0); }
+      else if (e.key === 'End') { e.preventDefault(); setActive(n - 1); }
+      else if (e.key === 'Enter' && (e.target === stage || (e.target as HTMLElement).closest('.wc-slide.is-active'))) { e.preventDefault(); open(active); }
+    });
+
+    // Drag, swipe (pointer events cover mouse, pen and touch)
+    let startX = 0, startY = 0, lastX = 0, lastT = 0, vel = 0, dragging = false, moved = false, pid = -1;
+    stage.addEventListener('pointerdown', (e) => {
+      if (e.button !== 0) return;
+      startX = lastX = e.clientX; startY = e.clientY; lastT = performance.now(); vel = 0;
+      dragging = true; moved = false; pid = e.pointerId;
+    });
+    stage.addEventListener('pointermove', (e) => {
+      if (!dragging || e.pointerId !== pid) return;
+      const dx = e.clientX - startX, dy = e.clientY - startY;
+      if (!moved) {
+        if (Math.abs(dx) < 6) return;
+        if (Math.abs(dy) > Math.abs(dx)) { dragging = false; return; } // vertical: let the page scroll
+        moved = true;
+        stage.classList.add('is-dragging');
+        stage.setPointerCapture(pid);
+      }
+      const now = performance.now();
+      vel = (e.clientX - lastX) / Math.max(1, now - lastT);
+      lastX = e.clientX; lastT = now;
+      dragOffset = Math.max(-0.6, Math.min(n - 0.4, active - dx / spacing)) - active;
+      render(active + dragOffset);
+    });
+    const endDrag = () => {
+      if (!dragging) return;
+      dragging = false;
+      if (!moved) return;
+      stage.classList.remove('is-dragging');
+      const fling = Math.abs(vel) > 0.45 ? -Math.sign(vel) : 0;
+      const target = Math.abs(dragOffset) > 0.18 ? Math.round(active + dragOffset + fling * 0.5) : active;
+      setActive(target === active && fling ? active + fling : target);
+    };
+    stage.addEventListener('pointerup', endDrag);
+    stage.addEventListener('pointercancel', endDrag);
+    // A drag shouldn't also count as a click.
+    stage.addEventListener('click', (e) => {
+      if (moved) { e.preventDefault(); e.stopPropagation(); moved = false; return; }
+      const card = (e.target as HTMLElement).closest<HTMLAnchorElement>('.wc-card');
+      if (!card) return;
+      if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return; // let new-tab clicks through
+      e.preventDefault();
+      const i = slides.indexOf(card.closest('.wc-slide') as HTMLElement);
+      if (i === active) open(i);
+      else setActive(i);
+    }, true);
+
+    // Trackpad / wheel: sideways scrolling always; up/down only while the carousel has keyboard focus.
+    let wheelAcc = 0, wheelLock = 0;
+    stage.addEventListener('wheel', (e) => {
+      const sideways = Math.abs(e.deltaX) > Math.abs(e.deltaY);
+      const focused = root.contains(document.activeElement) && document.activeElement !== document.body;
+      const delta = sideways ? e.deltaX : focused ? e.deltaY : 0;
+      if (!delta) return;
+      const dir = Math.sign(delta);
+      if ((dir < 0 && active === 0) || (dir > 0 && active === n - 1)) return; // let the page scroll at the ends
+      e.preventDefault();
+      const now = performance.now();
+      if (now < wheelLock) return;
+      wheelAcc += delta;
+      if (Math.abs(wheelAcc) > 40) {
+        setActive(active + Math.sign(wheelAcc));
+        wheelAcc = 0;
+        wheelLock = now + 550;
+      }
+    }, { passive: false });
+
+    // Featured card leans toward the cursor a little (mouse only).
+    if (finePointer && !reduce) {
+      stage.addEventListener('pointermove', (e) => {
+        if (stage.classList.contains('is-dragging')) return;
+        const card = slides[active].querySelector<HTMLElement>('.wc-card')!;
+        const r = card.getBoundingClientRect();
+        const px = (e.clientX - (r.left + r.width / 2)) / r.width;
+        const py = (e.clientY - (r.top + r.height / 2)) / r.height;
+        card.style.setProperty('--ty', `${Math.max(-1, Math.min(1, px)) * 4}deg`);
+        card.style.setProperty('--tx', `${Math.max(-1, Math.min(1, py)) * -3}deg`);
+      });
+      stage.addEventListener('pointerleave', () => {
+        const card = slides[active].querySelector<HTMLElement>('.wc-card')!;
+        card.style.setProperty('--ty', '0deg');
+        card.style.setProperty('--tx', '0deg');
+      });
+    }
+
+    // Panel button opens the case study with the same transition.
+    panels.forEach((p, i) => {
+      p.querySelector<HTMLAnchorElement>('.wc-cta')!.addEventListener('click', (e) => {
+        if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+        e.preventDefault();
+        open(i);
+      });
+    });
+
+    // Expand the featured project toward the viewer, then open its case study.
+    function open(i: number) {
+      const href = slides[i].querySelector('a')!.href;
+      store.set(KEY, String(i));
+      store.set('kc-work-return', '1');
+      if (reduce) { location.href = href; return; }
+      const media = slides[i].querySelector<HTMLElement>('.wc-media')!;
+      const r = media.getBoundingClientRect();
+      const ghost = document.createElement('div');
+      ghost.className = 'wc-expand';
+      ghost.style.cssText = `left:${r.left}px;top:${r.top}px;width:${r.width}px;height:${r.height}px;`;
+      const inner = media.querySelector('img, .wc-poster')?.cloneNode(true);
+      if (inner) ghost.append(inner);
+      const wash = document.createElement('div');
+      wash.className = 'wc-expand-wash';
+      ghost.append(wash);
+      document.body.append(ghost);
+      root.classList.add('is-leaving');
+      const ease = 'cubic-bezier(0.7, 0, 0.2, 1)';
+      ghost.animate(
+        [
+          { left: `${r.left}px`, top: `${r.top}px`, width: `${r.width}px`, height: `${r.height}px` },
+          { left: '0px', top: '0px', width: `${innerWidth}px`, height: `${innerHeight}px`, borderColor: 'transparent' },
+        ],
+        { duration: 750, easing: ease, fill: 'forwards' },
+      );
+      wash.animate([{ opacity: 0 }, { opacity: 0 }, { opacity: 1 }], { duration: 950, easing: 'ease-in', fill: 'forwards' })
+        .finished.then(() => { location.href = href; });
+    }
+
+    // Coming back (browser back button restores this page from cache): undo the transition.
+    addEventListener('pageshow', (e) => {
+      if (!(e as PageTransitionEvent).persisted) return;
+      document.querySelectorAll('.wc-expand').forEach((g) => g.remove());
+      root.classList.remove('is-leaving');
+    });
+
+    // Start: restore the project you last looked at, and settle it back in if you just came from it.
+    root.classList.add('is-ready');
+    const saved = Number(store.get(KEY));
+    const start = Number.isFinite(saved) && saved >= 0 && saved < n ? saved : 0;
+    slides.forEach((el) => (el.style.transition = 'none'));
+    active = start;
+    measure();
+    setActive(start, { silent: true });
+    void root.offsetWidth;
+    slides.forEach((el) => (el.style.transition = ''));
+    if (store.get('kc-work-return') && !reduce) {
+      store.del('kc-work-return');
+      const media = slides[start].querySelector<HTMLElement>('.wc-media')!;
+      media.animate(
+        [{ transform: 'scale(1.18)', opacity: 0.2 }, { transform: 'none', opacity: 1 }],
+        { duration: 900, easing: 'cubic-bezier(0.22, 1, 0.36, 1)' },
+      );
+    }
+    let rt = 0;
+    addEventListener('resize', () => { cancelAnimationFrame(rt); rt = requestAnimationFrame(measure); });
+  }
+</script>

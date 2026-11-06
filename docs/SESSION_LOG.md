@@ -4,6 +4,24 @@ Newest entry on top. Claude Code: read the latest entry at the start of every se
 
 ---
 
+## 2026-11-06 (evening): 3D Work carousel
+**Changed**
+- The Work section is now an immersive 3D carousel (`src/components/WorkCarousel.astro`) instead of the bento
+  grid: featured project centered; neighbors recede with perspective, rotation, scale, masked crop, and dimming.
+  Background rings turn and the glow and wireframe drift with each move; the accent color shifts per project.
+- Navigation: arrows, numbered pagination, drag and swipe, sideways trackpad scrolling (up and down too while the
+  carousel has focus), and keyboard arrows, Home, End, and Enter.
+- The info panel (title, summary, role, timeline, category, CTA) animates in with a masked title reveal.
+- Opening a project expands its card toward the viewer, then the page cross-fades into the case study. Coming
+  back via "All work" restores and settles the same project. Reduced motion: flat, no spin, no expand.
+- New `category:` field on every case study (short labels drawn from each project's own summary).
+- Without JavaScript, it falls back to a horizontal row of links.
+
+**Open**
+- Covers still missing (typographic posters for now): Walmart Intake Form Redesign, Texstyle, Fitness Bingo.
+
+---
+
 ## 2026-11-06 (later): Cinematic case study template
 **Changed**
 - New reusable template: passcode → laptop flip → autoplay video → scrollable 8-section case study

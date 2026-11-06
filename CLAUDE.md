@@ -46,7 +46,8 @@ Astro 5 static site with MDX case studies. Pinned to Astro 5, so don't upgrade m
 | What | Where |
 |------|-------|
 | Name, title, email, LinkedIn, years of experience | `src/site.ts` |
-| Home page (hero, intro, case study bento) | `src/pages/index.astro` |
+| Home page (hero, intro) | `src/pages/index.astro` |
+| Work showroom: 3D project carousel on the home page | `src/components/WorkCarousel.astro` |
 | Interactive hero (sticker name + face) | `src/components/HeroMess.astro` |
 | About page | `src/pages/about.astro` |
 | Résumé page (links `public/resume.pdf` automatically) | `src/pages/resume.astro` |
@@ -72,6 +73,10 @@ previewing, but it isn't linked from the home page and isn't built for the live 
 **Cinematic case studies:** a `cinematic:` block in a case study's frontmatter swaps the page for the passcode →
 laptop flip → video → case study template. Their content is scrambled in `public/locked/`; the originals and the
 passcode are NOT in this repo (Kennedy keeps them). Read `docs/CINEMATIC.md` before touching them.
+
+**Work carousel:** projects appear in the order of their `order:` field. Each card uses the project's cover image
+(or its tagged sample, or a typographic poster if there's none), its `category:`, role, timeline, and summary.
+Cinematic projects use their own accent color. Heavy motion stays in the carousel; the rest of the site is calm.
 
 **Todos:** `<Todo label="…">question</Todo>` renders a visible yellow note on the page so unfinished content can't
 ship unnoticed. `npm run status` lists all of them.

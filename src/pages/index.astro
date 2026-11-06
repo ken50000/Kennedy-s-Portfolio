@@ -1,7 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
-import ImageSlot from '../components/ImageSlot.astro';
+import WorkCarousel from '../components/WorkCarousel.astro';
 import Todo from '../components/Todo.astro';
 import HeroMess from '../components/HeroMess.astro';
 import { site, url } from '../site';
@@ -48,29 +48,7 @@ const studies = (await getCollection('case-studies'))
     <div class="work-head">
       <h2 id="work-title" class="work-title container">Work <span class="count">({studies.length})</span></h2>
     </div>
-    <ul class="bento container">
-      {studies.map((s) => (
-        <li>
-          <a href={url(`/work/${s.id}/`)} class="tile">
-            <div class="tile-img">
-              <ImageSlot folder={s.id} name="cover" alt={s.data.cover.alt} hint={s.data.cover.hint} ratio="16 / 10" />
-            </div>
-            <div class="tile-text">
-              <div class="tile-head">
-                <h3>{s.data.title}</h3>
-                <span class="arrow" aria-hidden="true">↗</span>
-              </div>
-              <p class="summary">{s.data.summary}</p>
-              <p class="mono tile-meta">
-                <span>{s.data.role}</span>
-                <span>{s.data.timeline}</span>
-                {s.data.status === 'draft' && <span class="draft">Draft</span>}
-              </p>
-            </div>
-          </a>
-        </li>
-      ))}
-    </ul>
+    <WorkCarousel studies={studies} />
   </section>
 </Base>
 
@@ -116,9 +94,7 @@ const studies = (await getCollection('case-studies'))
   .meta dt { color: var(--red-hot); margin-bottom: 0.2rem; }
   .meta dd { margin: 0; font-weight: 600; }
 
-  /* Work: a full-bleed red slab for the heading, then a bento grid. The first study is the big
-     tile; the next two stack beside it; any more flow in two per row. 2px gaps over a cream
-     background draw the rules between tiles. */
+  /* Work: a full-bleed red slab for the heading, then the 3D project carousel (src/components/WorkCarousel.astro). */
   .work { padding-top: 0; scroll-margin-top: 3.25rem; }
   .work-head { background: var(--grad-red); border-block: var(--rule); }
   .work-title {
@@ -131,58 +107,7 @@ const studies = (await getCollection('case-studies'))
   }
   .count { font-family: var(--font-mono); font-size: 0.16em; font-weight: 400; letter-spacing: 0; vertical-align: top; color: var(--accent-ink); }
 
-  .bento {
-    list-style: none;
-    margin-block: clamp(2rem, 5vw, 3.5rem) 0;
-    padding: 0;
-    display: grid;
-    grid-template-columns: repeat(12, 1fr);
-    gap: 2px;
-    background: var(--line);
-    border: var(--rule);
-  }
-  .bento > li { grid-column: span 6; display: flex; background: var(--bg); }
-  .bento > li:nth-child(1) { grid-column: span 7; grid-row: span 2; }
-  .bento > li:nth-child(2), .bento > li:nth-child(3) { grid-column: span 5; }
-  /* An even number of tiles leaves the last one alone in its row; let it span the full width. */
-  .bento > li:nth-child(even):last-child:not(:nth-child(2)) { grid-column: span 12; }
-
-  .tile {
-    position: relative;
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 1.25rem;
-    padding: clamp(1rem, 2.2vw, 1.75rem);
-    color: inherit;
-    text-decoration: none;
-  }
-  .tile-img { flex: 1; display: flex; min-height: 0; }
-  .tile-img :global(.slot) { margin: 0; flex: 1; display: flex; }
-  .tile-img :global(img) { width: 100%; height: 100%; object-fit: cover; border: var(--rule); transition: box-shadow 0.2s; }
-  .tile-img :global(.placeholder) { border-color: var(--line-strong); transition: box-shadow 0.2s; }
-  .bento > li:nth-child(1) .tile-img :global(.placeholder) { aspect-ratio: auto !important; min-height: clamp(16rem, 32vw, 26rem); height: 100%; }
-
-  .tile-head { display: flex; justify-content: space-between; align-items: start; gap: 1rem; }
-  .tile h3 { font-size: clamp(1.7rem, 3vw, 2.6rem); letter-spacing: -0.045em; font-weight: 800; margin: 0; }
-  .bento > li:nth-child(1) .tile h3 { font-size: clamp(2.2rem, 5vw, 4.25rem); letter-spacing: -0.055em; }
-  .summary { color: var(--muted); max-width: 46ch; margin: 0.6rem 0 0.9rem; }
-  .tile-meta { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0; }
-  .tile-meta span { border: 1px solid currentColor; padding: 0.15rem 0.5rem; }
-  .tile-meta .draft { color: var(--warn); }
-  .arrow { font-size: clamp(1.6rem, 3vw, 2.6rem); line-height: 1; font-weight: 300; color: var(--red-hot); transition: transform 0.2s; }
-
-  .tile:hover, .tile:focus-visible { background: var(--grad-red); color: var(--accent-ink); }
-  .tile:focus-visible { outline-offset: -6px; outline-color: var(--text); }
-  .tile:hover .summary, .tile:focus-visible .summary { color: var(--accent-ink); }
-  .tile:hover .draft, .tile:focus-visible .draft { color: var(--bg); background: var(--warn); border-color: var(--warn); }
-  .tile:hover .arrow, .tile:focus-visible .arrow { color: var(--accent-ink); transform: translate(4px, -4px); }
-  .tile:hover .tile-img :global(img), .tile:hover .tile-img :global(.placeholder),
-  .tile:focus-visible .tile-img :global(img), .tile:focus-visible .tile-img :global(.placeholder) { box-shadow: 8px 8px 0 var(--bg); }
-
   @media (max-width: 860px) {
     .hero-row { grid-template-columns: 1fr; }
-    .bento > li, .bento > li:nth-child(n) { grid-column: 1 / -1; grid-row: auto; }
-    .bento > li:nth-child(1) .tile-img :global(.placeholder) { min-height: 0; aspect-ratio: 16 / 10 !important; }
   }
 </style>
