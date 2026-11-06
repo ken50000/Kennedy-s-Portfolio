@@ -1,8 +1,12 @@
 ---
-// Reusable cinematic case study: passcode → laptop flip → autoplay video → scrollable case study.
+// Reusable cinematic case study: (passcode →) device flip → autoplay video → scrollable case study.
 // Turn it on for any case study with a `cinematic:` block in its frontmatter (see docs/CINEMATIC.md).
-// The page itself only shows public info (title, summary, role, timeline). The case study, its images, and
-// the video are scrambled in public/locked/ and only open in the browser with the passcode.
+//
+// Two modes:
+// - Locked (NDA work): `payload` set. The page only shows public info (title, summary, role, timeline). The case
+//   study, its images, and the video are scrambled in public/locked/ and only open with the passcode.
+// - Open: `video` set, no payload. No passcode; the device flips in when the stage scrolls into view, the video
+//   plays muted, and the case study is the MDX body (passed in as the default slot).
 import { url, site } from '../site';
 
 interface Link { href: string; title: string }
@@ -12,17 +16,33 @@ interface Props {
   role: string;
   timeline: string;
   team?: string;
-  cinematic: { payload: string; kicker: string; mark: string; accent: string; accentHot: string; accentInk: string; accentGrad: string };
+  cinematic: {
+    payload?: string; video?: string; poster?: string; sound: boolean; device: 'laptop' | 'phone'; ratio?: string;
+    kicker: string; mark: string; accent: string; accentHot: string; accentInk: string; accentGrad: string;
+  };
   prev?: Link;
   next?: Link;
 }
 const { title, summary, role, timeline, team, cinematic: c, prev, next } = Astro.props;
+const locked = !!c.payload;
+const phone = c.device === 'phone';
 const vars = `--c:${c.accent};--c-hot:${c.accentHot};--c-ink:${c.accentInk};--c-grad:${c.accentGrad}`;
+const ratio = c.ratio ?? (phone ? '9 / 19.5' : '16 / 9');
+const missing = (v?: string) => !v || /todo/i.test(v);
 ---
 
 <link rel="stylesheet" href={url('/cine/cinematic.css')} />
 
-<div class="cine" style={vars} data-payload={url(c.payload)} data-title={title}>
+<div
+  class="cine"
+  style={vars}
+  data-mode={locked ? 'locked' : 'open'}
+  data-payload={locked ? url(c.payload!) : undefined}
+  data-video={!locked && c.video ? url(c.video) : undefined}
+  data-poster={!locked && c.poster ? url(c.poster) : undefined}
+  data-sound={c.sound ? 'true' : undefined}
+  data-title={title}
+>
   <div class="cine-progress" aria-hidden="true"></div>
 
   <header class="cine-head container">
@@ -31,7 +51,7 @@ const vars = `--c:${c.accent};--c-hot:${c.accentHot};--c-ink:${c.accentInk};--c-
     <h1 class="cine-title">{title}</h1>
   </header>
 
-  <section class="cine-stage" aria-label="Project presentation">
+  <section class:list={['cine-stage', { 'is-phone': phone }]} aria-label="Project presentation">
     <div class="cine-glow" aria-hidden="true"></div>
     <svg class="cine-wire" viewBox="0 0 1200 600" preserveAspectRatio="xMidYMid slice" aria-hidden="true" fill="none" stroke="currentColor">
       <path d="M0 120H1200M0 480H1200M160 0V600M1040 0V600" stroke-width="1" />
@@ -42,28 +62,39 @@ const vars = `--c:${c.accent};--c-hot:${c.accentHot};--c-ink:${c.accentInk};--c-
       <path class="w-accent" d="M320 220L520 300M880 380L700 300" stroke-width="1.5" stroke-dasharray="6 8" />
     </svg>
 
-    <form class="lock-form" autocomplete="off">
-      <p class="mono lock-kicker">Protected project</p>
-      <p class="lock-copy">This project is under NDA. Enter the passcode to open the presentation.</p>
-      <label class="mono" for="lock-code">Passcode</label>
-      <div class="lock-row">
-        <input id="lock-code" name="code" type="password" autocomplete="off" autocapitalize="off" spellcheck="false" required />
-        <button class="cine-btn" type="submit">Unlock</button>
-      </div>
-      <p class="lock-msg mono" role="status" aria-live="polite"></p>
-      <p class="lock-ask">Need the passcode? <a href={`mailto:${site.email}?subject=Portfolio%20passcode`}>Email me</a>.</p>
-    </form>
+    {locked && (
+      <form class="lock-form" autocomplete="off">
+        <p class="mono lock-kicker">Protected project</p>
+        <p class="lock-copy">This project is under NDA. Enter the passcode to open the presentation.</p>
+        <label class="mono" for="lock-code">Passcode</label>
+        <div class="lock-row">
+          <input id="lock-code" name="code" type="password" autocomplete="off" autocapitalize="off" spellcheck="false" required />
+          <button class="cine-btn" type="submit">Unlock</button>
+        </div>
+        <p class="lock-msg mono" role="status" aria-live="polite"></p>
+        <p class="lock-ask">Need the passcode? <a href={`mailto:${site.email}?subject=Portfolio%20passcode`}>Email me</a>.</p>
+      </form>
+    )}
 
-    <div class="laptop" hidden>
+    <div class:list={['laptop', { 'is-phone': phone }]} hidden={locked}>
       <div class="laptop-3d">
         <div class="lid">
           <div class="lid-face">
-            <div class="screen"><div class="screen-glow" aria-hidden="true"></div></div>
+            <div class="screen" style={`--ratio:${ratio}`}><div class="screen-glow" aria-hidden="true"></div></div>
           </div>
           <div class="lid-back" aria-hidden="true">
             {c.mark === 'receipt' ? (
               <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="4" stroke-linejoin="round">
                 <path d="M14 6h36v52l-6-4-6 4-6-4-6 4-6-4-6 4z" /><path d="M22 20h20M22 30h20M22 40h12" stroke-linecap="round" />
+              </svg>
+            ) : c.mark === 'sun' ? (
+              <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round">
+                <path d="M18 34a14 14 0 0 1 28 0" /><path d="M32 8v8M15 14l5 6M49 14l-5 6M6 28h8M50 28h8" />
+                <circle cx="32" cy="44" r="6" /><path d="M22 56v-4h20v4" />
+              </svg>
+            ) : c.mark === 'form' ? (
+              <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="12" y="6" width="40" height="52" /><path d="M20 18h24M20 28h24M20 38h12" /><path d="M36 46l5 5 9-10" />
               </svg>
             ) : (
               <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="4">
@@ -73,12 +104,13 @@ const vars = `--c:${c.accent};--c-hot:${c.accentHot};--c-ink:${c.accentInk};--c-
             <span class="mono">{title}</span>
           </div>
         </div>
-        <div class="deck" aria-hidden="true"></div>
+        {!phone && <div class="deck" aria-hidden="true"></div>}
       </div>
     </div>
 
     <div class="cine-after" hidden>
       <button class="cine-btn cine-unmute" type="button" hidden>Turn sound on</button>
+      <button class="cine-btn cine-replay" type="button" hidden>Replay</button>
       <a class="cine-skip mono" href="#cine-about">Skip to the case study ↓</a>
     </div>
   </section>
@@ -86,13 +118,13 @@ const vars = `--c:${c.accent};--c-hot:${c.accentHot};--c-ink:${c.accentInk};--c-
   <div class="cine-meta container" id="cine-about">
     <p class="cine-summary">{summary}</p>
     <dl class="cine-facts">
-      <div><dt class="mono">Role</dt><dd>{role}</dd></div>
-      <div><dt class="mono">Timeline</dt><dd>{timeline}</dd></div>
+      <div><dt class="mono">Role</dt><dd class:list={{ 'is-missing': missing(role) }}>{missing(role) ? 'To be added' : role}</dd></div>
+      <div><dt class="mono">Timeline</dt><dd class:list={{ 'is-missing': missing(timeline) }}>{missing(timeline) ? 'To be added' : timeline}</dd></div>
       {team && <div><dt class="mono">Team</dt><dd>{team}</dd></div>}
     </dl>
   </div>
 
-  <div id="cine-story" class="cine-story container" hidden></div>
+  <div id="cine-story" class="cine-story container" hidden={locked}><slot /></div>
 
   {(prev || next) && (
     <nav class="cine-next" aria-label="More projects">

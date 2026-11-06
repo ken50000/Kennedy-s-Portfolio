@@ -134,7 +134,7 @@
 }
 .lid-back svg { width: clamp(44px, 7vw, 84px); height: auto; color: var(--c); filter: drop-shadow(0 2px 0 rgb(0 0 0 / 0.25)); }
 .lid-back span { color: #3a3c43; letter-spacing: 0.18em; text-transform: uppercase; }
-.screen { position: relative; aspect-ratio: 16 / 9; background: #000; overflow: hidden; border-radius: 4px; }
+.screen { position: relative; aspect-ratio: var(--ratio, 16 / 9); background: #000; overflow: hidden; border-radius: 4px; }
 .screen video, .screen iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; display: block; background: #000; }
 .screen-glow { /* "power on" sweep */
   position: absolute; inset: 0; z-index: 2; pointer-events: none;
@@ -321,3 +321,39 @@
 /* glance cells still waiting on Kennedy */
 .cine-glance .cine-missing { color: var(--warn); font-weight: 600; }
 .cine-glance > div:first-child .cine-missing { color: var(--c-ink); }
+
+/* ---------- open projects (no passcode) ---------- */
+/* The device waits on its back, then flips when the stage scrolls into view. */
+.cine[data-mode='open'] .laptop { opacity: 1; }
+.cine-facts dd.is-missing { color: var(--warn); }
+.cine-replay { font-size: 0.9rem; padding: 0.45rem 0.9rem; }
+/* The MDX body arrives wrapped in one lead section; let its children lay out as if it weren't there. */
+.cine-story .cs-section.cs-lead { display: contents; }
+.cine .cine-fig .slot, .cine .cine-card .slot { margin: 0; }
+.cine .cine-card .slot img { border: 0; }
+
+/* ---------- phone frame ---------- */
+.cine-stage.is-phone { min-height: 0; }
+.laptop.is-phone { width: min(100% - 2 * var(--gutter), 300px); perspective: 1400px; }
+.is-phone .lid-face, .is-phone .lid-back { border-radius: 46px; }
+.is-phone .lid-face {
+  padding: 10px;
+  background: linear-gradient(180deg, #1b1c20, #0c0c0e);
+  box-shadow: 0 0 0 2px #45474f, 0 0 0 4px #9aa0ab, 0 40px 80px rgb(0 0 0 / 0.55);
+}
+.is-phone .lid-face::before { display: none; }
+.is-phone .screen { border-radius: 37px; background: #000; }
+.is-phone .lid-back::before { /* camera bump */
+  content: ''; position: absolute; left: 14%; top: 5%; width: 34%; aspect-ratio: 1; border-radius: 28%;
+  background: linear-gradient(150deg, #cfd2d8, #a5a9b2); box-shadow: inset 0 0 0 2px #8e939d;
+}
+
+/* phone screenshots in a row (mobile projects) */
+.cine-phones { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1.25rem; margin: 2rem 0 0; }
+.cine-phones > figure { margin: 0; }
+.cine .cine-phones .slot { margin: 0; }
+.cine-phones .cine-zoom { border: 0; background: none; }
+.cine-phones img { border-radius: 22px; border: 2px solid var(--line-strong) !important; }
+.cine-phones figcaption { margin-top: 0.6rem; font-family: var(--font-mono); font-size: 0.75rem; line-height: 1.45; color: var(--muted); }
+.cine-phones figcaption b { color: var(--c-hot); font-weight: 400; }
+@media (max-width: 860px) { .cine-phones { grid-template-columns: repeat(2, minmax(0, 1fr)); } }

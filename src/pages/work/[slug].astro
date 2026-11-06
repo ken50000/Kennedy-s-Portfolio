@@ -23,7 +23,9 @@ const d = entry.data;
 
 <Base title={d.title} description={d.summary}>
   {d.cinematic ? (
-    <CinematicCase title={d.title} summary={d.summary} role={d.role} timeline={d.timeline} team={d.team} cinematic={d.cinematic} prev={prev} next={next} />
+    <CinematicCase title={d.title} summary={d.summary} role={d.role} timeline={d.timeline} team={d.team} cinematic={d.cinematic} prev={prev} next={next}>
+      {!d.cinematic.payload && <Content />}
+    </CinematicCase>
   ) : (
   <article>
     <header class="cs-head container">

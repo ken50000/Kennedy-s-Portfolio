@@ -6,6 +6,17 @@ A reusable, passcode-protected case study experience:
 
 ReimburseMe and Data Platform Concept use it. Any new project can too, without rebuilding the interaction.
 
+## Two modes
+
+- **Locked** (NDA work: ReimburseMe, Data Platform Concept, Walmart Intake Form Redesign): `payload:` set. Passcode
+  first; everything after it is scrambled (below).
+- **Open** (Texstyle): `video:` set, no payload. No passcode. The device waits on its back and flips when the stage
+  scrolls into view; the video plays muted. The case study is the MDX body itself (plain HTML building blocks
+  below, plus `<Todo>` and `<ImageSlot>`), so it stays editable and shows in `npm run status`. Video lives in
+  `public/media/`.
+- `device: phone` uses a phone frame (mobile projects); `ratio:` sets the screen shape to match the video.
+- `<div class="cine-phones cine-full">` with `<figure>`s makes a row of phone screenshots.
+
 ## How it works (plain words)
 
 - The public page shows only the title, a one-line summary, role, and timeline, plus the passcode box.

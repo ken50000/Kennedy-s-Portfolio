@@ -13,7 +13,7 @@ interface Study {
   data: {
     title: string; summary: string; role: string; timeline: string; category?: string; status: string;
     cover: { alt: string };
-    cinematic?: { accent: string; accentHot: string; accentInk: string };
+    cinematic?: { payload?: string; video?: string; accent: string; accentHot: string; accentInk: string };
   };
 }
 interface Props { studies: Study[] }
@@ -40,7 +40,8 @@ const slides = studies.map((s, i) => {
     href: url(`/work/${s.id}/`),
     d: s.data,
     cover: coverFor(s.id),
-    locked: !!c,
+    locked: !!c?.payload,
+    cinematic: !!c,
     accent: c?.accent ?? '#e2332b',
     hot: c?.accentHot ?? '#ff4b3e',
     ink: c?.accentInk ?? '#faf8f3',
@@ -133,7 +134,7 @@ const slides = studies.map((s, i) => {
             {s.d.category && <div><dt class="mono">Category</dt><dd>{s.d.category}</dd></div>}
           </dl>
           <a class="wc-cta wc-rise" style="--k:3" href={s.href}>
-            {s.locked ? 'Open the presentation' : 'Explore the case study'} <span aria-hidden="true">→</span>
+            {s.cinematic ? 'Open the presentation' : 'Explore the case study'} <span aria-hidden="true">→</span>
           </a>
         </article>
       ))}

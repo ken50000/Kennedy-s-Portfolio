@@ -1,6 +1,7 @@
-// Cinematic case study template: passcode → laptop flip → autoplay video → scrollable case study.
-// Works with files made by scripts/lock-case.mjs. Nothing secret lives in this file or in the page:
+// Cinematic case study template: (passcode →) device flip → autoplay video → scrollable case study.
+// Locked mode works with files made by scripts/lock-case.mjs: nothing secret lives in this file or in the page;
 // the case study and the video stay scrambled until the visitor enters the passcode.
+// Open mode (no passcode): the device flips in when the stage scrolls into view and the video plays muted.
 (() => {
   const root = document.querySelector('.cine');
   if (!root) return;
@@ -12,12 +13,15 @@
   const stage = root.querySelector('.cine-stage');
   const form = root.querySelector('.lock-form');
   const msg = root.querySelector('.lock-msg');
-  const btn = form.querySelector('button');
+  const btn = form && form.querySelector('button');
   const laptop = root.querySelector('.laptop');
   const screen = root.querySelector('.screen');
   const after = root.querySelector('.cine-after');
   const story = root.querySelector('.cine-story');
-  const payloadUrl = new URL(root.dataset.payload, location.href);
+  const open = root.dataset.mode === 'open';
+  const payloadUrl = open ? null : new URL(root.dataset.payload, location.href);
+
+  if (open) { startOpen(); return; }
 
   // Start downloading the scrambled files as soon as someone shows interest, so unlocking feels instant.
   let metaP, mediaP;
@@ -91,7 +95,7 @@
     story.innerHTML = body.html;
     enhance();
 
-    // 3. Bring the stage into view, then lock card out, laptop in, flip.
+    // 3. Bring the stage into view, then lock card out, device in, flip, play.
     const r = stage.getBoundingClientRect();
     if (r.top < 0 || r.bottom > innerHeight) {
       stage.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: r.height > innerHeight ? 'start' : 'center' });
@@ -101,20 +105,60 @@
     await wait(480);
     form.hidden = true;
     laptop.hidden = false;
-    void laptop.offsetWidth; // start the transition from the "back of the lid" pose
-    stage.classList.add('is-open');
     story.hidden = false;
-    after.hidden = false;
     observe();
+    await flip(player);
+  }
+
+  // The device turns from its back to face the viewer, the screen powers on, and the video starts.
+  async function flip(player) {
+    void laptop.offsetWidth; // start the transition from the "back of the device" pose
+    stage.classList.add('is-open');
+    after.hidden = false;
     await wait(1950);
     stage.classList.add('is-live');
     await wait(350);
-
-    // 4. Play.
     if (player) play(player);
   }
 
+  // Open projects: no passcode. The story is already on the page; the device flips in on view.
+  function startOpen() {
+    let player = null;
+    if (root.dataset.video) {
+      player = document.createElement('video');
+      player.src = root.dataset.video;
+      if (root.dataset.poster) player.poster = root.dataset.poster;
+      player.controls = true;
+      player.playsInline = true;
+      player.muted = true; // browsers only autoplay muted video without a click
+      player.preload = 'auto';
+      player.setAttribute('aria-label', `${root.dataset.title} video`);
+      screen.prepend(player);
+      const replay = after.querySelector('.cine-replay');
+      player.addEventListener('ended', () => { if (replay) replay.hidden = false; });
+      if (replay) replay.onclick = () => { replay.hidden = true; player.currentTime = 0; player.play(); };
+    }
+    enhance();
+    observe();
+    let started = false;
+    const go = () => { if (!started) { started = true; flip(player); } };
+    if (!('IntersectionObserver' in window)) { go(); return; }
+    const io = new IntersectionObserver((entries) => {
+      if (entries.some((en) => en.isIntersecting)) { io.disconnect(); setTimeout(go, reduce ? 0 : 250); }
+    }, { threshold: 0.35 });
+    io.observe(stage);
+  }
+
   async function play(p) {
+    if (p.tagName === 'VIDEO' && open) {
+      try { await p.play(); } catch { /* the visitor can press play */ }
+      if (root.dataset.sound) {
+        const unmute = after.querySelector('.cine-unmute');
+        unmute.hidden = false;
+        unmute.onclick = () => { p.muted = false; unmute.hidden = true; p.focus(); };
+      }
+      return;
+    }
     if (p.tagName === 'VIDEO') {
       try {
         await p.play();
@@ -161,7 +205,7 @@
     document.body.append(dlg);
     dlg.querySelector('button').onclick = () => dlg.close();
     dlg.addEventListener('click', (e) => { if (e.target === dlg) dlg.close(); });
-    story.querySelectorAll('.cine-fig img, .cine-card img').forEach((img) => {
+    story.querySelectorAll('.cine-fig img, .cine-card img, .cine-phones img').forEach((img) => {
       const b = document.createElement('button');
       b.type = 'button';
       b.className = 'cine-zoom';
@@ -178,9 +222,9 @@
     });
 
     // Things that animate in as you scroll.
-    story.querySelectorAll('.cine-glance > div, .cine-sec > header, .cine-sec > div > *, .cine-sec > .cine-full, .cine-flow li, .cine-card, .cine-steps li')
+    story.querySelectorAll('.cine-glance > div, .cine-sec > header, .cine-sec > div > *, .cine-sec > .cine-full, .cine-flow li, .cine-card, .cine-steps li, .cine-phones > figure')
       .forEach((el) => el.classList.add('cine-reveal'));
-    story.querySelectorAll('.cine-glance, .cine-flow, .cine-cards, .cine-steps').forEach((group) => {
+    story.querySelectorAll('.cine-glance, .cine-flow, .cine-cards, .cine-steps, .cine-phones').forEach((group) => {
       [...group.children].forEach((c, i) => c.style.setProperty('--d', `${i * 90}ms`));
     });
   }

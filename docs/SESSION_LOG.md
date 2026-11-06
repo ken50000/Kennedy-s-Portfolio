@@ -4,6 +4,24 @@ Newest entry on top. Claude Code: read the latest entry at the start of every se
 
 ---
 
+## 2026-11-06 (late): Texstyle and Intake go cinematic
+**Changed**
+- Template now has an open mode (no passcode) and a phone frame; screen shape follows each video.
+- Texstyle: open cinematic page with its prototype walkthrough on a phone (trimmed 2:40 → 1:52, 6.5 MB,
+  `public/media/texstyle.mp4`). Case study rebuilt in the 8 sections from her Wix text plus the prototype's
+  credits (GD468 Interaction Design, MSU, Fall 2024, team of four; her role: Co-Director of Graphic Design,
+  Content Strategy). Seven screen stills.
+- Walmart Intake Form Redesign: locked cinematic page (real Walmart internal screens), prototype walkthrough
+  in a laptop (57s → 41s, 0.6 MB). Public card and metadata now say summer 2024 Walmart internship.
+- Carousel: "Passcode" badge only on locked projects.
+
+**Open**
+- Texstyle notes: 6 (her specific work, research, one decision, outcome, reflection, wording check); lo-fi and
+  mid-fi images from Wix still missing.
+- Intake notes (locked): 8. The tracking screen was left out of stills (shows a name and address).
+
+---
+
 ## 2026-11-06 (late): Data Hub + Studio content from her slides
 **Changed**
 - Rewrote the locked Data Platform Concept case study from Kennedy's own "My Contribution" and vision slides:
