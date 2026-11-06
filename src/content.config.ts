@@ -17,6 +17,18 @@ const caseStudies = defineCollection({
     status: z.enum(['draft', 'ready']).default('draft'),
     // Set to true to keep a case study off the home page while it's unfinished.
     hidden: z.boolean().default(false),
+    // Cinematic layout: passcode → laptop flip → video → case study. See docs/CINEMATIC.md.
+    cinematic: z
+      .object({
+        payload: z.string(), // e.g. "/locked/reimburseme.json", made by scripts/lock-case.mjs
+        kicker: z.string().default('Case study · Under NDA'),
+        mark: z.enum(['lock', 'receipt']).default('lock'), // icon on the back of the laptop lid
+        accent: z.string().default('#e2332b'),
+        accentHot: z.string().default('#ff4b3e'), // small accent text on dark; keep 4.5:1 contrast
+        accentInk: z.string().default('#faf8f3'), // text on top of the accent
+        accentGrad: z.string().default('linear-gradient(115deg, #ff4b3e 0%, #e2332b 35%, #b5251e 65%, #6b130f 100%)'),
+      })
+      .optional(),
   }),
 });
 

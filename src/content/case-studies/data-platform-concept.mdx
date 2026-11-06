@@ -7,25 +7,17 @@ order: 8
 cover:
   alt: A padlock with the words "Passcode protected"
   hint: Keep the padlock cover, or use a fully abstracted image with no company branding
+cinematic:
+  payload: /locked/data-platform-concept.json
+  kicker: Case study · Concept · Under NDA
+  mark: lock
 status: draft
 ---
-import Locked from '../../components/Locked.astro';
-import Todo from '../../components/Todo.astro';
 
 {/*
-  Added 2026-11-06 from Kennedy's film-v2.html. Everything on this page is PUBLIC. Keep company names, product names,
-  and details out of this file. The film itself is scrambled in public/locked/data-platform-concept.json and only
-  opens with the passcode (see scripts/lock-project.mjs). The passcode is NOT stored anywhere in this repo.
+  Cinematic page (see docs/CINEMATIC.md). Everything in THIS file is public: keep company names, product names,
+  and details out of it. The case study, its screens, and the film are scrambled in public/locked/ and only open
+  with the passcode. Their private originals are NOT in this repo. Kennedy keeps them in "locked-case-sources".
   The film's soundtrack (audio/mix.wav) wasn't provided, so it plays silently with captions for now.
+  Open placeholders inside the locked case study: 10.
 */}
-
-<Locked src="/locked/data-platform-concept.json" title="Data platform concept walkthrough" />
-
-<Todo label="Kennedy: your role">
-  What was your part in this film and the prototype in it? For example, the UI design, the prototype, the film
-  itself. This note shows on the public page, so don't name the company or product here.
-</Todo>
-
-<Todo label="Kennedy: OK to share?">
-  Check with Nacho that sharing this by passcode is fine, and decide who gets the passcode.
-</Todo>

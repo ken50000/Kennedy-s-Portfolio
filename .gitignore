@@ -7,3 +7,7 @@ Thumbs.db
 # Inbox contents (only the README is tracked)
 inbox/*
 !inbox/README.md
+
+# Private originals of locked case studies. Never commit these (this repo is public).
+locked-case-sources/
+private/

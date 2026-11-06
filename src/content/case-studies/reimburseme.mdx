@@ -8,112 +8,22 @@ order: 1
 cover:
   alt: An abstracted ReimburseMe screen from a flow Kennedy designed
   hint: A blurred or abstracted screen from one of YOUR flows. No internal data.
+cinematic:
+  payload: /locked/reimburseme.json
+  kicker: Case study · Enterprise product · Under NDA
+  mark: receipt
+  accent: "#19c39b"
+  accentHot: "#3fe0b8"
+  accentInk: "#08130f"
+  accentGrad: "linear-gradient(115deg, #7af7d4 0%, #2fd6ab 40%, #19c39b 70%, #12a585 100%)"
 status: draft
 ---
-import ImageSlot from '../../components/ImageSlot.astro';
-import Todo from '../../components/Todo.astro';
-import Bento from '../../components/Bento.astro';
 
 {/*
-  This page tells Kennedy's own story on ReimburseMe: the flows SHE designed and how she grew, at her level
-  (UI for specific flows, on a team led by a senior designer). Only add numbers, research, or results she can
-  personally back up. Walmart screens must be blurred or abstracted, with no internal data or names.
+  Cinematic page (see docs/CINEMATIC.md). The case study, its screens, and the video are scrambled in public/locked/
+  and only open with the passcode. Their private originals are NOT in this repo. Kennedy keeps them in
+  "locked-case-sources".
+  Told at Kennedy's level: she designs UI for specific flows on a team led by a senior UX designer. Program results
+  in her video ($21M+, 9K+ associates…) are team results and must stay labeled that way.
+  Open placeholders inside the locked case study: 12.
 */}
-
-<Todo label="Kennedy: confirm the story">
-  This page tells the story of your growth on ReimburseMe. Check two things. (1) Is the order right: settings
-  updates first, then full flows, now itemizations? (2) Was the July 2025 move from UI Designer to UX Designer a
-  promotion? Fix anything that's off.
-</Todo>
-
-## Context
-
-ReimburseMe is Walmart's expense reimbursement app. Associates use it to submit expenses and get paid back, and
-more than 9,000 of them rely on it. I joined the team as a User Interface Designer in July 2024, working with a
-senior UX designer, product managers, and engineers.
-
-<Todo label="Kennedy: in your words">
-  Describe, in 2 sentences, what an associate does in ReimburseMe and what's hard about it. Keep it about the
-  experience, with no business metrics.
-</Todo>
-
-## 1. Learning the system: targeted updates
-
-My first projects were focused updates: the **delegation** settings, **language preferences**, and **report
-export**.
-
-<ImageSlot
-  folder="reimburseme"
-  name="stage-1"
-  alt="An abstracted settings screen Kennedy updated"
-  hint="One of your early updates (delegation, language preferences, or report export), blurred or abstracted"
-/>
-
-<Todo label="Kennedy: stage 1">
-  Pick one of these updates. What was wrong before, what did you change, and what did you learn about the design
-  system or handoff?
-</Todo>
-
-## 2. Owning full flows
-
-Next I designed complete flows: **receipt OCR capture**, **per diem**, **vehicle management**, **InComm and
-credit cards**, and **export**.
-
-<Todo label="Kennedy: pick one to go deep">
-  Choose ONE of these flows (OCR or per diem could be the clearest) and answer: what made it hard (rules, edge
-  cases, errors, mobile)? What's one decision you made and why? What feedback from your lead or engineers changed
-  the design?
-</Todo>
-
-<Bento wide>
-  <ImageSlot
-    folder="reimburseme"
-    name="flow-before"
-    alt="The flow before Kennedy's redesign, abstracted"
-    hint="BEFORE screen of the flow you chose, blurred or abstracted"
-  />
-  <ImageSlot
-    folder="reimburseme"
-    name="flow-after"
-    alt="The flow after Kennedy's redesign, abstracted"
-    hint="AFTER screen of the same flow"
-  />
-</Bento>
-
-## 3. Now: itemizations
-
-Today I own the UI for **itemizations**, which let associates split a single receipt across expense types.
-
-<Todo label="Kennedy: itemizations">
-  Check that description. Then: what's tricky about itemizing, and what do you own now that you wouldn't have
-  owned a year ago? Work in progress is fine to show at a high level if it's cleared.
-</Todo>
-
-<ImageSlot
-  folder="reimburseme"
-  name="itemizations"
-  alt="Itemizations screen, abstracted"
-  hint="Your itemizations work, blurred or abstracted"
-/>
-
-## Visual QA: my favorite puzzle
-
-Visual QA is where I'm most at home. I compare what engineering built against the design and track down every
-mismatch before it ships.
-
-<ImageSlot
-  folder="reimburseme"
-  name="vqa"
-  alt="A visual QA comparison: design versus build, with differences annotated"
-  hint="A design-vs-build comparison with your annotations (abstracted)"
-/>
-
-<Todo label="Kennedy: VQA example">
-  One real example: what was off, how you documented it, and what got fixed.
-</Todo>
-
-## Reflection
-
-<Todo label="Kennedy: reflection">
-  In 3–4 sentences: how do you work differently now than in July 2024, and what do you want to own next?
-</Todo>

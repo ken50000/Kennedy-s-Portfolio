@@ -56,6 +56,7 @@ Astro 5 static site with MDX case studies. Pinned to Astro 5, so don't upgrade m
 | Drop zone for new images | `inbox/` |
 | Colors, fonts, spacing | `src/styles/global.css` |
 | Hosting | `.github/workflows/deploy.yml` (GitHub Pages) |
+| Cinematic, passcode-protected case studies (ReimburseMe, Data Platform Concept) | `docs/CINEMATIC.md` |
 
 **Image slots:** `<ImageSlot folder="ani" name="cover" … />` shows a labeled placeholder until
 `src/images/ani/cover.jpg` (or .png/.webp) exists, then shows the real image, optimized automatically. Every slot
@@ -67,6 +68,10 @@ side, wrap them in `<Bento>` (`cols={3}` for three across, `wide` to span the pa
 
 **Hidden case studies:** `hidden: true` in a case study's frontmatter means it shows in `npm run dev` for
 previewing, but it isn't linked from the home page and isn't built for the live site.
+
+**Cinematic case studies:** a `cinematic:` block in a case study's frontmatter swaps the page for the passcode →
+laptop flip → video → case study template. Their content is scrambled in `public/locked/`; the originals and the
+passcode are NOT in this repo (Kennedy keeps them). Read `docs/CINEMATIC.md` before touching them.
 
 **Todos:** `<Todo label="…">question</Todo>` renders a visible yellow note on the page so unfinished content can't
 ship unnoticed. `npm run status` lists all of them.

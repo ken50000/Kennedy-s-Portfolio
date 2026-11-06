@@ -2,26 +2,35 @@
 import { getCollection, render } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import ImageSlot from '../../components/ImageSlot.astro';
+import CinematicCase from '../../components/CinematicCase.astro';
 import { url } from '../../site';
 
 export async function getStaticPaths() {
   // Hidden case studies show in `npm run dev` for previewing, but are never built for the live site.
-  const studies = (await getCollection('case-studies')).filter((s) => import.meta.env.DEV || !s.data.hidden);
-  return studies.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+  const studies = (await getCollection('case-studies'))
+    .filter((s) => import.meta.env.DEV || !s.data.hidden)
+    .sort((a, b) => a.data.order - b.data.order);
+  return studies.map((entry, i) => {
+    const link = (e?: (typeof studies)[number]) => (e ? { href: url(`/work/${e.id}/`), title: e.data.title } : undefined);
+    return { params: { slug: entry.id }, props: { entry, prev: link(studies[i - 1]), next: link(studies[i + 1]) } };
+  });
 }
 
-const { entry } = Astro.props;
+const { entry, prev, next } = Astro.props;
 const { Content } = await render(entry);
 const d = entry.data;
 ---
 
 <Base title={d.title} description={d.summary}>
+  {d.cinematic ? (
+    <CinematicCase title={d.title} summary={d.summary} role={d.role} timeline={d.timeline} team={d.team} cinematic={d.cinematic} prev={prev} next={next} />
+  ) : (
   <article>
     <header class="cs-head container">
       <p class="mono back"><a href={url('/#work')}>← All work</a></p>
       <h1 class="page-title bleed-red">{d.title}</h1>
 
-      <!-- Bento intro: the cover as the big tile, summary and facts beside it. -->
+      {/* Bento intro: the cover as the big tile, summary and facts beside it. */}
       <div class="cs-hero">
         <div class="cs-cover">
           <ImageSlot folder={entry.id} name="cover" alt={d.cover.alt} hint={d.cover.hint} ratio="16 / 10" />
@@ -36,12 +45,13 @@ const d = entry.data;
       </div>
     </header>
 
-    <!-- Each `##` section becomes a row: heading on the left, content on the right
-         (see src/lib/rehype-sections.mjs). Wide images and <Bento wide> span both columns. -->
+    {/* Each `##` section becomes a row: heading on the left, content on the right
+         (see src/lib/rehype-sections.mjs). Wide images and <Bento wide> span both columns. */}
     <div class="container cs-body">
       <Content />
     </div>
   </article>
+  )}
 </Base>
 
 <style>

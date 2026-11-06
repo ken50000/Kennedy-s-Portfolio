@@ -1,0 +1,105 @@
+---
+// Reusable cinematic case study: passcode → laptop flip → autoplay video → scrollable case study.
+// Turn it on for any case study with a `cinematic:` block in its frontmatter (see docs/CINEMATIC.md).
+// The page itself only shows public info (title, summary, role, timeline). The case study, its images, and
+// the video are scrambled in public/locked/ and only open in the browser with the passcode.
+import { url, site } from '../site';
+
+interface Link { href: string; title: string }
+interface Props {
+  title: string;
+  summary: string;
+  role: string;
+  timeline: string;
+  team?: string;
+  cinematic: { payload: string; kicker: string; mark: string; accent: string; accentHot: string; accentInk: string; accentGrad: string };
+  prev?: Link;
+  next?: Link;
+}
+const { title, summary, role, timeline, team, cinematic: c, prev, next } = Astro.props;
+const vars = `--c:${c.accent};--c-hot:${c.accentHot};--c-ink:${c.accentInk};--c-grad:${c.accentGrad}`;
+---
+
+<link rel="stylesheet" href={url('/cine/cinematic.css')} />
+
+<div class="cine" style={vars} data-payload={url(c.payload)} data-title={title}>
+  <div class="cine-progress" aria-hidden="true"></div>
+
+  <header class="cine-head container">
+    <p class="mono cine-back"><a href={url('/#work')}>← All work</a></p>
+    <p class="mono cine-kicker"><span class="dot" aria-hidden="true"></span>{c.kicker}</p>
+    <h1 class="cine-title">{title}</h1>
+  </header>
+
+  <section class="cine-stage" aria-label="Project presentation">
+    <div class="cine-glow" aria-hidden="true"></div>
+    <svg class="cine-wire" viewBox="0 0 1200 600" preserveAspectRatio="xMidYMid slice" aria-hidden="true" fill="none" stroke="currentColor">
+      <path d="M0 120H1200M0 480H1200M160 0V600M1040 0V600" stroke-width="1" />
+      <rect x="90" y="70" width="230" height="150" stroke-width="1" />
+      <rect x="880" y="380" width="250" height="160" stroke-width="1" />
+      <circle cx="1040" cy="120" r="64" stroke-width="1" />
+      <circle class="w-accent" cx="160" cy="480" r="8" stroke-width="2" />
+      <path class="w-accent" d="M320 220L520 300M880 380L700 300" stroke-width="1.5" stroke-dasharray="6 8" />
+    </svg>
+
+    <form class="lock-form" autocomplete="off">
+      <p class="mono lock-kicker">Protected project</p>
+      <p class="lock-copy">This project is under NDA. Enter the passcode to open the presentation.</p>
+      <label class="mono" for="lock-code">Passcode</label>
+      <div class="lock-row">
+        <input id="lock-code" name="code" type="password" autocomplete="off" autocapitalize="off" spellcheck="false" required />
+        <button class="cine-btn" type="submit">Unlock</button>
+      </div>
+      <p class="lock-msg mono" role="status" aria-live="polite"></p>
+      <p class="lock-ask">Need the passcode? <a href={`mailto:${site.email}?subject=Portfolio%20passcode`}>Email me</a>.</p>
+    </form>
+
+    <div class="laptop" hidden>
+      <div class="laptop-3d">
+        <div class="lid">
+          <div class="lid-face">
+            <div class="screen"><div class="screen-glow" aria-hidden="true"></div></div>
+          </div>
+          <div class="lid-back" aria-hidden="true">
+            {c.mark === 'receipt' ? (
+              <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="4" stroke-linejoin="round">
+                <path d="M14 6h36v52l-6-4-6 4-6-4-6 4-6-4-6 4z" /><path d="M22 20h20M22 30h20M22 40h12" stroke-linecap="round" />
+              </svg>
+            ) : (
+              <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="4">
+                <rect x="12" y="28" width="40" height="30" /><path d="M20 28V20a12 12 0 0 1 24 0v8" /><path d="M32 40v8" stroke-linecap="round" />
+              </svg>
+            )}
+            <span class="mono">{title}</span>
+          </div>
+        </div>
+        <div class="deck" aria-hidden="true"></div>
+      </div>
+    </div>
+
+    <div class="cine-after" hidden>
+      <button class="cine-btn cine-unmute" type="button" hidden>Turn sound on</button>
+      <a class="cine-skip mono" href="#cine-about">Skip to the case study ↓</a>
+    </div>
+  </section>
+
+  <div class="cine-meta container" id="cine-about">
+    <p class="cine-summary">{summary}</p>
+    <dl class="cine-facts">
+      <div><dt class="mono">Role</dt><dd>{role}</dd></div>
+      <div><dt class="mono">Timeline</dt><dd>{timeline}</dd></div>
+      {team && <div><dt class="mono">Team</dt><dd>{team}</dd></div>}
+    </dl>
+  </div>
+
+  <div id="cine-story" class="cine-story container" hidden></div>
+
+  {(prev || next) && (
+    <nav class="cine-next" aria-label="More projects">
+      {prev ? <a href={prev.href}><span class="mono">← Previous project</span><strong>{prev.title}</strong></a> : <a href={url('/#work')}><span class="mono">← Back to</span><strong>All work</strong></a>}
+      {next ? <a href={next.href}><span class="mono">Next project →</span><strong>{next.title}</strong></a> : <a href={url('/#work')}><span class="mono">Back to →</span><strong>All work</strong></a>}
+    </nav>
+  )}
+</div>
+
+<script is:inline src={url('/cine/cinematic.js')} defer></script>

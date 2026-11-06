@@ -4,6 +4,27 @@ Newest entry on top. Claude Code: read the latest entry at the start of every se
 
 ---
 
+## 2026-11-06 (later): Cinematic case study template
+**Changed**
+- New reusable template: passcode → laptop flip → autoplay video → scrollable 8-section case study
+  (`src/components/CinematicCase.astro`, `public/cine/`, `scripts/lock-case.mjs`, guide in `docs/CINEMATIC.md`).
+  Any case study opts in with a `cinematic:` block in its frontmatter.
+- ReimburseMe now uses it, with its own teal look and Kennedy's ReimburseMe video (compressed from 28.7 MB to
+  6.4 MB). Its written case study moved into the locked content, restructured into the 8 sections, with
+  screenshots from the video.
+- Data Platform Concept now uses it, in red, with the concept film and six chapter stills.
+- Both locked with the same passcode as before. Removed the old single-film lock (`Locked.astro`,
+  `lock-project.mjs`). Added previous/next project links on cinematic pages.
+
+**Open**
+- Locked placeholders: ReimburseMe 12, Data Platform 10. They don't show in `npm run status`.
+- ReimburseMe video includes program results ($21M+ etc.), roadmap plans, and Walmart branding. It's behind the
+  passcode; any written mention of those numbers must say they're program results.
+- Confirm Kennedy made the ReimburseMe video herself (no borrowed deck slides).
+- Data Platform film still has no soundtrack.
+
+---
+
 ## 2026-11-06: Passcode-protected project
 **Changed**
 - New case study "Data Platform Concept" (`data-platform-concept.mdx`), 8th on the home page. It holds her concept

@@ -1,0 +1,19 @@
+# Build-only check for branches other than main: catches errors before anything goes live.
+name: Check build
+on:
+  push:
+    branches-ignore: [main]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      SITE: https://${{ github.repository_owner }}.github.io
+      BASE_PATH: /${{ github.event.repository.name }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run build
