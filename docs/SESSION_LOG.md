@@ -4,6 +4,22 @@ Newest entry on top. Claude Code: read the latest entry at the start of every se
 
 ---
 
+## 2026-11-06 (late): Data Hub + Studio content from her slides
+**Changed**
+- Rewrote the locked Data Platform Concept case study from Kennedy's own "My Contribution" and vision slides:
+  her ownership (the connection prototype, not the Data Hub or Studio products), the vision, constraints, the
+  4-step flow, two iterations, what she built, outcome ("built for evaluation"), next steps, and what she
+  learned. Added two images from her slides. Placeholders: 10 → 4. She approved the text.
+
+**Open**
+- ReimburseMe: waiting for full-size screenshots of her own contribution slides ("Designing clearer
+  reimbursement workflows", "My individual contribution", "What the work enabled"). Her other slides are
+  program-level; leave out the roadmap and savings projections.
+- Rename "Data Platform Concept" to "Data Hub + Studio"? Waiting on her (it's public on the home page).
+- Remaining Data Hub notes: users' pain points, who she worked with, what informed the flow, why a drawer first.
+
+---
+
 ## 2026-11-06 (late): New passcode
 - Re-locked ReimburseMe and Data Platform Concept with a new passcode Kennedy chose (not written here), then
   changed it again at her request. Older passcodes no longer open them.
