@@ -4,6 +4,12 @@ Newest entry on top. Claude Code: read the latest entry at the start of every se
 
 ---
 
+## 2026-11-06 (late): Data Platform cover
+- Replaced the padlock cover with an abstract art-directed cover in the same set as the other four (report
+  hub, AI chat drawer, generated chart). No branding or real screens.
+
+---
+
 ## 2026-11-06 (late): Texstyle and Intake go cinematic
 **Changed**
 - Template now has an open mode (no passcode) and a phone frame; screen shape follows each video.
