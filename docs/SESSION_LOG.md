@@ -4,6 +4,21 @@ Newest entry on top. Claude Code: read the latest entry at the start of every se
 
 ---
 
+## 2026-11-06 (evening): New covers
+**Changed**
+- New art-directed covers for ReimburseMe, Walmart Intake Form Redesign, Texstyle, and Fitness Bingo
+  (`src/images/<slug>/cover.jpg`), built from Kennedy's reference images as one set: same frame, labels, crop
+  marks, and title placement; each with its own palette and device.
+- Walmart covers are abstracted: no logos, no real screens or data. Texstyle uses a redraw of its own logo
+  mark. Fitness Bingo keeps its palette and waves but not the third-party illustration from the reference.
+- ReimburseMe's accent changed from teal to blue to match its identity (carousel and locked page).
+
+**Open**
+- Couldn't open her Figma "Walmart Initiatives" slides (Figma blocks automated access; no Figma connector).
+  Nothing on the covers depends on them.
+
+---
+
 ## 2026-11-06 (evening): 3D Work carousel
 **Changed**
 - The Work section is now an immersive 3D carousel (`src/components/WorkCarousel.astro`) instead of the bento
