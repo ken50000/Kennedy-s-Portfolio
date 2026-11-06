@@ -4,6 +4,12 @@ Newest entry on top. Claude Code: read the latest entry at the start of every se
 
 ---
 
+## 2026-11-06 (late): New passcode
+- Re-locked ReimburseMe and Data Platform Concept with a new passcode Kennedy chose (not written here).
+  The old passcode no longer opens them.
+
+---
+
 ## 2026-11-06 (evening): New covers
 **Changed**
 - New art-directed covers for ReimburseMe, Walmart Intake Form Redesign, Texstyle, and Fitness Bingo
