@@ -7,6 +7,8 @@ Newest entry on top. Claude Code: read the latest entry at the start of every se
 ## 2026-11-06 (late): New passcode
 - Re-locked ReimburseMe and Data Platform Concept with a new passcode Kennedy chose (not written here), then
   changed it again at her request. Older passcodes no longer open them.
+- Passcode box now forgives letter case and stray spaces, and always checks for the latest locked files
+  (browsers were reusing old copies for up to 10 minutes after a passcode change).
 
 ---
 

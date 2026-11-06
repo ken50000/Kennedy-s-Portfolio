@@ -21,8 +21,8 @@
 
   // Start downloading the scrambled files as soon as someone shows interest, so unlocking feels instant.
   let metaP, mediaP;
-  const getMeta = () => (metaP ||= fetch(payloadUrl).then((r) => { if (!r.ok) throw new Error('missing'); return r.json(); }));
-  const getMedia = (m) => (mediaP ||= fetch(new URL(m.media.file, payloadUrl)).then((r) => { if (!r.ok) throw new Error('missing'); return r.arrayBuffer(); }));
+  const getMeta = () => (metaP ||= fetch(payloadUrl, { cache: 'no-cache' }).then((r) => { if (!r.ok) throw new Error('missing'); return r.json(); }));
+  const getMedia = (m) => (mediaP ||= fetch(new URL(m.media.file, payloadUrl), { cache: 'no-cache' }).then((r) => { if (!r.ok) throw new Error('missing'); return r.arrayBuffer(); }));
   const prefetch = () => getMeta().then((m) => m.media && getMedia(m)).catch(() => {});
   form.code.addEventListener('focus', prefetch, { once: true });
   form.code.addEventListener('input', prefetch, { once: true });
@@ -33,15 +33,23 @@
     msg.textContent = 'Checking…';
     try {
       const m = await getMeta();
-      const base = await crypto.subtle.importKey('raw', new TextEncoder().encode(form.code.value), 'PBKDF2', false, ['deriveKey']);
-      const key = await crypto.subtle.deriveKey(
-        { name: 'PBKDF2', hash: 'SHA-256', salt: b64(m.salt), iterations: m.iter },
-        base, { name: 'AES-GCM', length: 256 }, false, ['decrypt'],
-      );
-      let body;
-      try {
-        body = JSON.parse(new TextDecoder().decode(await crypto.subtle.decrypt({ name: 'AES-GCM', iv: b64(m.iv) }, key, b64(m.ct))));
-      } catch {
+      // Try what was typed, then forgive stray spaces and letter case (phones often type lowercase).
+      const typed = form.code.value;
+      const tries = [...new Set([typed, typed.trim(), typed.trim().toUpperCase(), typed.trim().toLowerCase()])];
+      let key, body;
+      for (const code of tries) {
+        const base = await crypto.subtle.importKey('raw', new TextEncoder().encode(code), 'PBKDF2', false, ['deriveKey']);
+        const k = await crypto.subtle.deriveKey(
+          { name: 'PBKDF2', hash: 'SHA-256', salt: b64(m.salt), iterations: m.iter },
+          base, { name: 'AES-GCM', length: 256 }, false, ['decrypt'],
+        );
+        try {
+          body = JSON.parse(new TextDecoder().decode(await crypto.subtle.decrypt({ name: 'AES-GCM', iv: b64(m.iv) }, k, b64(m.ct))));
+          key = k;
+          break;
+        } catch { /* try the next variant */ }
+      }
+      if (!body) {
         msg.textContent = "That passcode didn't work. Check it and try again.";
         form.code.select();
         return;
