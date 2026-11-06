@@ -4,6 +4,22 @@ Newest entry on top. Claude Code: read the latest entry at the start of every se
 
 ---
 
+## 2026-11-06: Passcode-protected project
+**Changed**
+- New case study "Data Platform Concept" (`data-platform-concept.mdx`), 8th on the home page. It holds her concept
+  film behind a passcode via the new `<Locked>` component. The film is stored scrambled (AES-256, PBKDF2) in
+  `public/locked/data-platform-concept.json`. The original file and the passcode are NOT in this repo.
+- Fixed the film's centering so it fits any screen size.
+- Added `scripts/lock-project.mjs` to lock other files the same way (or re-lock with a new passcode).
+
+**Open**
+- Her role on the project, and Nacho's OK to share it by passcode.
+- The film's soundtrack (`audio/mix.wav`) wasn't provided, so it plays silently with captions. To add sound,
+  embed the audio into the film and re-lock it.
+- Keep company and product names off the public page text; only the scrambled film contains them.
+
+---
+
 ## 2026-11-05 (evening): Imported Wix case studies
 **Changed**
 - Three new case studies from her Wix site (campbellkennedy09.wixsite.com/my-site-1): Texstyle, Fitness Bingo,
