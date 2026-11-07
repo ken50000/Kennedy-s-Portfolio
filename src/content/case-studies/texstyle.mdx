@@ -28,107 +28,138 @@ import Todo from '../../components/Todo.astro';
 {/*
   Open cinematic page (no passcode): the phone flips in and the prototype walkthrough plays (public/media/texstyle.mp4,
   trimmed and compressed from Kennedy's Dec 2024 screen recording). This MDX body is the case study.
-  Facts: her Wix case study + the prototype's own Acknowledgements screen (GD468 Interaction Design, Michigan State,
-  team of four, Fall 2024; Kennedy: Co-Director of Graphic Design, Content Strategy). Screens: stills from the video.
+  Facts: Kennedy's own TexStyle case study draft (Nov 6, 2026), her Wix page, and the prototype's Acknowledgements
+  screen (GD468 Interaction Design, Michigan State, team of four, Fall 2024). Screens: stills from the video.
+  OPEN QUESTION: her draft says "Lead UX Designer"; the prototype credits list Matthew Scott Hernandez as Project Lead /
+  Director of UX and Kennedy as Co-Director of Graphic Design, Content Strategy. Don't claim the lead role until she
+  confirms how to word it.
 */}
 
 <div class="cine-glance">
-  <div><span class="cine-label">In one line</span><p>A shopping app that grades clothing brands on sustainability, labor, and transparency.</p></div>
-  <div><span class="cine-label">My role</span><p>Co-Director of Graphic Design and Content Strategy, on a team of four.</p></div>
+  <div><span class="cine-label">In one line</span><p>A mobile shopping app that shows young shoppers the real cost of their clothes.</p></div>
+  <div><span class="cine-label">My role</span><p>Co-Director of Graphic Design and Content Strategy, on a team of four. I planned and ran usability testing with fashion students.</p></div>
   <div><span class="cine-label">Context</span><p>A concept for GD468: Interaction Design at Michigan State University, Fall 2024.</p></div>
-  <div><span class="cine-label">What we made</span><p>A clickable mobile prototype: sign-up, Explore, brand impact reports, Inspo, Favorites, and profile.</p></div>
+  <div><span class="cine-label">Deliverables</span><p>Sketches, mid-fi wireframes, usability tests, and a hi-fi prototype.</p></div>
 </div>
 
 <section class="cine-sec" id="overview">
   <header><span class="cine-num">01</span><h2>Project overview</h2></header>
   <div>
-    <p class="cine-lede">Texstyle makes fashion more transparent. It shows shoppers how brands affect people and the planet, and nudges them toward more responsible choices.</p>
+    <p class="cine-lede">TexStyle is a mobile shopping app that shows young shoppers the real cost of their clothes.</p>
+    <p>It grades each item on sustainability, labor practices, and transparency, then points people to better alternatives.</p>
     <p>We designed it as a concept for GD468: Interaction Design at Michigan State University, as a team of four.</p>
-    <Todo label="Kennedy: check the wording">This text is a close rewrite of your Wix page. Read it once and fix anything that sounds off.</Todo>
   </div>
 </section>
 
 <section class="cine-sec" id="goal">
   <header><span class="cine-num">02</span><h2>The goal</h2></header>
   <div>
-    <p>Fast fashion drives overconsumption, environmental harm, and unfair labor practices, and shoppers rarely see those costs.</p>
-    <p class="cine-lede">Show the hidden costs of a purchase, with a simple grade anyone can read.</p>
-    <p>Shoppers search for a brand to see a simple grade for <strong>sustainability</strong>, <strong>labor practices</strong>, and <strong>transparency</strong>, plus more sustainable alternatives.</p>
+    <blockquote class="cine-quote">How might we help young shoppers understand the impact of a piece of clothing, right when they're deciding whether to buy it, without making shopping feel like homework?<cite>Our design question</cite></blockquote>
+    <h3>Who we designed for</h3>
+    <p>Young, trend-conscious shoppers who buy clothes online often and care about fitting in, but rarely think about where their clothes come from.</p>
+    <ol class="cine-flow">
+      <li><b>They want</b><span>Stylish clothes at prices they can afford</span></li>
+      <li><b>They struggle with</b><span>No quick, trustworthy way to judge a brand's ethics</span></li>
+      <li><b>They won't</b><span>Read long reports, or give up style to shop responsibly</span></li>
+    </ol>
   </div>
 </section>
 
 <section class="cine-sec" id="challenge">
-  <header><span class="cine-num">03</span><h2>The challenge</h2></header>
+  <header><span class="cine-num">03</span><h2>The problem</h2></header>
   <div>
-    <ul>
-      <li><strong>Cheap clothing has a cost.</strong> Demand for it leads to low-quality garments, waste, and pollution.</li>
-      <li><strong>Ads push frequent buying.</strong> Young people feel pressure to buy often to keep up socially.</li>
-      <li><strong>The supply chain is hidden.</strong> Many mass-market stores rely on cheap materials and unethical labor.</li>
-    </ul>
-    <p>The impact reaches climate change, poverty, and human rights, so it's worth solving.</p>
+    <p class="cine-lede">Young shoppers want trendy clothes, but they have no easy way to see what those clothes really cost the planet and the people who make them.</p>
+    <p>Cheap, trend-driven ads push frequent purchases as a way to keep up socially. To meet that demand, fast-fashion stores rely on low-quality materials and unethical labor. The result is clothing waste, pollution, and real harm to garment workers. These costs are hidden at the moment someone decides to buy.</p>
   </div>
 </section>
 
 <section class="cine-sec" id="role">
   <header><span class="cine-num">04</span><h2>My role</h2></header>
   <div>
-    <p class="cine-lede">My roles: Co-Director of Graphic Design, and Content Strategy.</p>
+    <p class="cine-lede">My roles: Co-Director of Graphic Design, and Content Strategy. I also planned and ran usability testing with fashion students.</p>
     <ul class="cine-tags">
       <li>Matthew Scott Hernandez · Project Lead, Director of UX</li>
       <li>Melayna Elliott · Director of Graphic Design, Visual Design</li>
       <li>Kennedy Campbell · Co-Director of Graphic Design, Content Strategy</li>
       <li>Timothy Ewald · UX Design, Research</li>
     </ul>
-    <Todo label="Kennedy: what you made">Name 2–3 things YOU designed or wrote. For example: "I designed the logo and the sustainability gauge, and wrote the brand facts and challenge copy." Which screens are yours?</Todo>
+    <Todo label="Kennedy: what you owned">Name 1–2 specific pieces you designed yourself, like the grading scale or the visual identity.</Todo>
   </div>
 </section>
 
 <section class="cine-sec" id="research">
-  <header><span class="cine-num">05</span><h2>Research &amp; discovery</h2></header>
+  <header><span class="cine-num">05</span><h2>Research &amp; testing</h2></header>
   <div>
-    <Todo label="Kennedy: what you learned">What did the team learn before designing, and how? For example: surveys, interviews, or a competitor review. What changed because of it? Say what you took part in.</Todo>
+    <Todo label="Kennedy: research">What research did the team do (for example: secondary research on fast fashion, a review of apps like Good On You, informal interviews)? List 2–3 real insights.</Todo>
+    <h3>Usability testing</h3>
+    <p>I tested TexStyle with fellow students in the fashion major: people who know clothing, materials, and trends better than the average shopper. That made them a tough, credible audience for an app that grades clothing.</p>
+    <Todo label="Kennedy: the test">How many students? In person, moderated, think-aloud? Mid-fi or hi-fi prototype? Which tasks (for example: find an item's grade, find a better alternative)?</Todo>
+    <Todo label="Kennedy: what changed">The most important part: 2–3 things participants said or did, and what you changed because of each. One short quote helps.</Todo>
   </div>
 </section>
 
 <section class="cine-sec" id="strategy">
-  <header><span class="cine-num">06</span><h2>Design strategy</h2></header>
+  <header><span class="cine-num">06</span><h2>Design process</h2></header>
   <div>
-    <p>We moved from quick sketches to structured wireframes before the final design.</p>
-    <ol class="cine-flow">
-      <li><b>Lo-fi sketches</b><span>Explored how the app would look and work</span></li>
-      <li><b>Mid-fi wireframes</b><span>Set the layout and a clearer picture of the experience</span></li>
-      <li><b>Hi-fi prototype</b><span>The clickable app in the video</span></li>
+    <p>We chose a simple, at-a-glance grade instead of detailed reports, so people can judge an item in seconds.</p>
+    <h3>Lo-fi sketches</h3>
+    <p>The process started on paper, mapping the full journey from first open to checkout before committing to layouts.</p>
+    <ol class="cine-flow cols-4">
+      <li><b>Welcome</b><span>A hands-holding-the-globe image sets the app's purpose</span></li>
+      <li><b>Style quiz</b><span>“What's your style?” personalizes recommendations</span></li>
+      <li><b>Account setup</b><span>Photo, email, username, and password</span></li>
+      <li><b>Onboarding</b><span>A carousel introduces the app</span></li>
+      <li><b>Home</b><span>Search and clothing categories</span></li>
+      <li><b>Category page</b><span>A “?” icon explains each item's sustainability</span></li>
+      <li><b>Checkout</b><span>Complete the purchase</span></li>
+      <li><b>Reward</b><span>“You win” after purchase, with a prompt to keep browsing</span></li>
     </ol>
     <div class="cine-fig">
-      <ImageSlot folder="texstyle" name="lofi" alt="Low-fidelity sketches of Texstyle app screens" hint="The image in the Lo-fi wireframes section of your Texstyle Wix page" wide />
+      <ImageSlot folder="texstyle" name="lofi" alt="Low-fidelity sketches of the TexStyle journey, from welcome to checkout" hint="Your lo-fi sketches (Wix or your files)" wide />
     </div>
+    <h3>Mid-fi wireframes</h3>
+    <p>Next came the sign-in flow in mid-fidelity, to get the structure right. Each screen was paired with a user-action note, so the team could check the flow step by step.</p>
+    <ul>
+      <li><strong>Splash screen</strong></li>
+      <li><strong>Registration:</strong> continue with Apple, continue with email, or skip</li>
+      <li><strong>Continue with Apple:</strong> includes a “Hide my email” option for privacy</li>
+      <li><strong>Continue with email:</strong> sign in, terms, and create account</li>
+    </ul>
     <div class="cine-fig">
-      <ImageSlot folder="texstyle" name="midfi" alt="Mid-fidelity wireframes of Texstyle app screens" hint="The image in the Mid-Fi wireframes section of your Texstyle Wix page" wide />
+      <ImageSlot folder="texstyle" name="midfi" alt="Mid-fidelity wireframes of the TexStyle sign-in flow, each with a user-action note" hint="Your mid-fi wireframes (Wix or your files)" wide />
     </div>
-    <Todo label="Kennedy: one decision">Pick one design choice, like the 1–7 sustainability gauge or the Monthly Challenge, and say why the team chose it.</Todo>
   </div>
 </section>
 
 <section class="cine-sec" id="solution">
   <header><span class="cine-num">07</span><h2>The solution</h2></header>
   <div>
+    <p class="cine-lede">TexStyle turns a hidden problem into a quick, rewarding shopping habit, built around four features.</p>
+    <ol class="cine-flow cols-2">
+      <li><b>Scan or search</b><span>Scan a barcode in-store or search any item. It meets shoppers where they already are.</span></li>
+      <li><b>Sustainability grade</b><span>Scores sustainability, labor practices, and transparency on a visual gauge. Complex ethics, readable in seconds.</span></li>
+      <li><b>Better alternatives</b><span>Suggests similar items with stronger grades, so people keep their style without the guilt.</span></li>
+      <li><b>Monthly Challenge</b><span>Rewards responsible choices, which keeps people coming back and builds lasting habits.</span></li>
+    </ol>
+    <Todo label="Kennedy: the grade">How is the grade calculated? What data sources does it use, and what does each score range mean?</Todo>
     <p>Key screens from the prototype. Select any screen to enlarge it.</p>
   </div>
   <div class="cine-phones cine-full">
-    <figure><ImageSlot folder="texstyle" name="login" alt="Texstyle sign-up screen: sign in with Apple, Google, or email" hint="Sign-up screen" ratio="670 / 1430" /><figcaption><b>Sign up</b> with Apple, Google, or email, or browse without an account.</figcaption></figure>
+    <figure><ImageSlot folder="texstyle" name="login" alt="TexStyle sign-up screen: sign in with Apple, Google, or email, or continue without signing up" hint="Sign-up screen" ratio="670 / 1430" /><figcaption><b>Sign up</b> with Apple, Google, or email, or browse without an account.</figcaption></figure>
     <figure><ImageSlot folder="texstyle" name="explore" alt="Explore screen with a sourced sustainability fact and a Monthly Challenge card" hint="Explore screen" ratio="670 / 1430" /><figcaption><b>Explore</b> opens with a sourced fact and a Monthly Challenge.</figcaption></figure>
     <figure><ImageSlot folder="texstyle" name="challenge" alt="Monthly Challenge revealed: visit a thrift store, donate one item, post on the Inspo Board" hint="Monthly Challenge" ratio="670 / 1430" /><figcaption><b>Monthly Challenge:</b> visit a thrift store, donate one item, post to the Inspo Board.</figcaption></figure>
     <figure><ImageSlot folder="texstyle" name="search" alt="Brand search with Luxury, Casual, Fitness, and Formal filters" hint="Search" ratio="670 / 1430" /><figcaption><b>Search</b> brands, filtered by style.</figcaption></figure>
-    <figure><ImageSlot folder="texstyle" name="impact" alt="A brand's Impact Report: an overall sustainability score of 2 out of 7, rated Poor, with its sources listed" hint="Impact report" ratio="670 / 1430" /><figcaption><b>Impact Report:</b> a 1–7 sustainability score, with sources one tap away.</figcaption></figure>
+    <figure><ImageSlot folder="texstyle" name="impact" alt="A brand's Impact Report: an overall sustainability score of 2 out of 7, rated Poor, with its sources listed" hint="Impact report" ratio="670 / 1430" /><figcaption><b>The grade:</b> a 1–7 gauge, with sources one tap away.</figcaption></figure>
     <figure><ImageSlot folder="texstyle" name="impact-explained" alt="The Impact Report explanation, with Materials and Supply Chain factors" hint="Impact report explanation" ratio="670 / 1430" /><figcaption><b>Why the score:</b> a plain explanation, plus Materials and Supply Chain factors.</figcaption></figure>
     <figure><ImageSlot folder="texstyle" name="favorites" alt="Favorites screen showing a saved brand with its sustainability rating" hint="Favorites" ratio="670 / 1430" /><figcaption><b>Favorites</b> keep brands and their ratings close.</figcaption></figure>
   </div>
 </section>
 
 <section class="cine-sec" id="impact">
-  <header><span class="cine-num">08</span><h2>Impact &amp; outcomes</h2></header>
+  <header><span class="cine-num">08</span><h2>Outcomes &amp; reflection</h2></header>
   <div>
-    <Todo label="Kennedy: outcome">How did the project land? For example: class feedback, a critique, or testing with classmates. Real results only.</Todo>
-    <Todo label="Kennedy: reflection">In 2–3 sentences: what did you learn as Co-Director of Graphic Design, and what would you change next?</Todo>
+    <Todo label="Kennedy: outcome">One line on how it went, for example: "Participants completed key tasks easily and said they'd use TexStyle before buying." Only if that's what happened.</Todo>
+    <Todo label="Kennedy: what you learned">2–3 real lessons. Your draft suggests: designing for behavior change (did rewards and alternatives matter more than information?), and testing with experts (what did fashion students catch that others might miss? one example).</Todo>
+    <Todo label="Kennedy: next steps">What would you do next? For example: build out the scan-result flow, test with everyday shoppers, or refine the grading criteria.</Todo>
   </div>
 </section>

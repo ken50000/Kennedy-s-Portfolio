@@ -4,6 +4,23 @@ Newest entry on top. Claude Code: read the latest entry at the start of every se
 
 ---
 
+## 2026-11-07: Texstyle from her case study draft
+**Changed**
+- Rewrote the Texstyle case study from Kennedy's own TexStyle draft: overview, design question, who it's for,
+  the problem, the 8-step lo-fi flow, the mid-fi sign-in flow, usability testing with fashion students, and the
+  four features (what and why). She approved the text.
+- Two new layouts for the step grids: `.cine-flow.cols-4` and `.cols-2` (`public/cine/cinematic.css`).
+
+**Open**
+- Texstyle notes: 8 (what she designed herself, research and insights, test details, what changed after testing,
+  how the grade works, outcome, lessons, next steps). Lo-fi and mid-fi images still missing.
+- Role wording: her draft says "Lead UX Designer", the prototype credits say Co-Director of Graphic Design and
+  Content Strategy (Matthew: Project Lead, Director of UX; Melayna: Director of Graphic Design, Visual Design).
+  Page uses the credits wording until she words it.
+- Left out on purpose: the "Skip registration" reason (her draft says to confirm it).
+
+---
+
 ## 2026-11-06 (late): Data Platform cover
 - Replaced the padlock cover with an abstract art-directed cover in the same set as the other four (report
   hub, AI chat drawer, generated chart). No branding or real screens.

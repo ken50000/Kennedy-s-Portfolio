@@ -357,3 +357,8 @@
 .cine-phones figcaption { margin-top: 0.6rem; font-family: var(--font-mono); font-size: 0.75rem; line-height: 1.45; color: var(--muted); }
 .cine-phones figcaption b { color: var(--c-hot); font-weight: 400; }
 @media (max-width: 860px) { .cine-phones { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+/* 4-across flow for longer sequences (8 steps = 2 rows) */
+.cine-flow.cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.cine-flow.cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+@media (max-width: 860px) { .cine-flow.cols-4, .cine-flow.cols-2 { grid-template-columns: 1fr; } }
