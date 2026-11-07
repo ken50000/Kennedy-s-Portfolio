@@ -139,6 +139,20 @@ Newest entry on top. Claude Code: read the latest entry at the start of every se
 
 ---
 
+## 2026-11-07: Added The Elephant in the Room (hidden draft)
+**Changed**
+- New case study: The Elephant in the Room (`elephant-in-the-room.mdx`), order 9, `hidden: true` so it does not show on the live site yet.
+- Added 5 screenshots in `src/images/elephant-in-the-room/` (facilitator dashboard as the cover, challenge, phone voting, phone resolution, facilitator resolution).
+- Text covers only what Kennedy asked for while building the game. No results, testers, or lessons were invented.
+
+**Open**
+- Todos: her role (and whether to say it was built with Claude), what started it, why teams are assigned, what she noticed, the outcome, and her reflection.
+- Screenshots were taken in a test setup without the game's real fonts and use sample ("Simulated") answers. Retake them from the live site.
+- Flip `hidden` to `false` once the Todos are answered and Nacho has looked at it.
+- Not built or previewed in this session (package installs were blocked). Run `npm install` then `npm run build`.
+
+---
+
 ## 2026-11-05 (evening): Imported Wix case studies
 **Changed**
 - Three new case studies from her Wix site (campbellkennedy09.wixsite.com/my-site-1): Texstyle, Fitness Bingo,

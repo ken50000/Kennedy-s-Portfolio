@@ -1,0 +1,121 @@
+---
+title: The Elephant in the Room
+summary: A phone game that helps a team say the hard thing safely, then choose three commitments together.
+role: UX Designer
+timeline: Nov 2026
+category: Web app · Team game
+tools: Claude (to build it), Vercel, GitHub
+order: 9
+cover:
+  alt: The facilitator dashboard for The Elephant in the Room, showing three live numbers, the newest answer, and answers grouped by theme
+  hint: A screenshot of the facilitator dashboard
+status: draft
+hidden: true   # flip to false once the Todos below are answered and Nacho has looked at it
+---
+import ImageSlot from '../../components/ImageSlot.astro';
+import Todo from '../../components/Todo.astro';
+import Bento from '../../components/Bento.astro';
+
+{/*
+  Source: the game itself, and what Kennedy asked for while it was built (Nov 5–7, 2026): the brief, the team
+  assignment change, the simpler dashboard, no accounts for players, and phone and desktop layouts.
+  Screenshots were taken in a test setup that could not load the game's real fonts, and show sample ("Simulated")
+  answers. Retake the hero shots from the live site before this goes public.
+  Nothing about results, testers, or lessons was written for her: those are Todos.
+*/}
+
+<Todo label="Kennedy: your role">
+  I wrote "UX Designer". What did you own on this one? For example: "I wrote the brief, designed every screen, and chose how the rounds work." Also: are you happy to say it was built with Claude? It's in the tools line now.
+</Todo>
+
+## The problem
+
+Most teams know where the friction is, but few say it out loud. Speaking up feels risky, and in a normal retro the loudest voice sets the agenda.
+
+I wanted one session where quiet people can speak as easily as confident ones, complaints turn into solutions, and the team leaves with something specific that they picked themselves.
+
+<Todo label="Kennedy: what started this">
+  What made you want to build this? For example: "My team kept skipping the hard topics in retros, so I designed something where nobody has to speak first."
+</Todo>
+
+## Who it's for
+
+- **Players:** coworkers on their own phones, in a room together. Joining has to take seconds, with no account and no email.
+- **The facilitator:** one person running the session from a laptop. They need to stay with the room, not babysit the screen.
+
+## The idea: three rounds
+
+**1. Speak Up.** Everyone answers six questions on their phone, without names. Any question can be skipped. The last question asks what the team does really well, so the session doesn't end on a complaint. Answers sort into seven themes that the facilitator can regroup, pin, or hide.
+
+**2. Survival Challenge.** Players are placed on teams automatically. Each team gets a workplace scenario, a mission, three discussion prompts, and a countdown. There are five scenarios, from a miscommunication to a broken process. Teams submit one solution, then award badges to other teams' ideas. Points reward teamwork: 5 for a solution and 10 for each badge from another team. Complaining earns nothing.
+
+**3. Resolution Room.** The room sees its top five concerns and the best solutions, then votes for three commitments. Each commitment gets an owner, a status, and a 30-day follow-up date, with a summary the team can copy.
+
+## Design decisions
+
+**Safe, and honest about it.** There are no names anywhere. Every question can be skipped, and the facilitator can hide any answer. I chose not to promise total anonymity. The app says answers are shown without names, because I can't promise more than that.
+
+**Sample players are always labeled.** The facilitator can fill the room with practice players to rehearse. Every simulated answer is tagged "Simulated", so it can never be mistaken for a real one.
+
+**Teams are assigned for you.** The first version let people choose their team. I changed it so each phone is simply told which team it's on, and to find the others and sit together.
+
+<Todo label="Kennedy: why you changed teams">
+  Why did you want teams assigned instead of chosen? For example: "People kept picking friends, and the teams ended up uneven."
+</Todo>
+
+**A calmer facilitator dashboard.** The first dashboard felt like too much to take in, so I cut it down to one column:
+
+- three numbers: players joined, finished, and answers
+- one "Just in" line instead of a scrolling feed
+- themes that open and close, with only the biggest one open at first
+- three actions on each answer: Discuss, Hide, and More
+- rarely used controls (practice players, presenter view, reset) behind one "More tools" button
+
+**No accounts for players.** An early version needed people to be invited, and a coworker couldn't take part. I moved the game to its own site, so players only need a link, and only I need a passcode.
+
+<Todo label="Kennedy: what you noticed">
+  Did anything surprise you when you tried the dashboard or the team change? Even one line helps, for example: "I stopped looking at the feed once it was gone."
+</Todo>
+
+## The solution
+
+<ImageSlot
+  folder="elephant-in-the-room"
+  name="challenge-host"
+  alt="The facilitator's live view of a challenge: the scenario, a countdown, team solutions, and the badge voting controls"
+  hint="The facilitator's challenge screen"
+  wide
+/>
+
+<Bento>
+  <ImageSlot folder="elephant-in-the-room" name="voting" alt="A phone showing the Miscommunication Maze challenge, the player's team, a sent solution, and five badges to award" hint="The player's challenge and voting screen" />
+  <ImageSlot folder="elephant-in-the-room" name="resolution-phone" alt="A phone showing the Resolution Room, where players vote for the team's commitments" hint="The player's Resolution Room screen" />
+</Bento>
+
+<ImageSlot
+  folder="elephant-in-the-room"
+  name="resolution"
+  alt="The Resolution Room on a laptop: the top five team concerns, best solutions, and the three commitments the team chose"
+  hint="The facilitator's Resolution Room screen"
+  wide
+/>
+
+## Accessibility and screen sizes
+
+- Light, dark, or automatic look, three text sizes, and a reduced-motion setting, all chosen by the viewer.
+- A visible focus outline on every control, and focus moves to the page heading on each new screen.
+- Controls are at least 44 pixels tall, and colour is never the only way to tell themes apart.
+- The layouts were checked from a small 320 pixel phone to a 1920 pixel desktop, in light and dark. The dashboard overflowed on small phones, and I fixed it.
+- Before the session, the whole flow was run from start to finish with automated tests, with a facilitator and several players at once.
+
+## Outcome
+
+<Todo label="Kennedy: how it went">
+  Only real results, please. How many people played? How many finished? Which three commitments did the team choose? One short quote from someone who played would be great. If you haven't run it yet, say so and we'll leave this as "Running it on [date]".
+</Todo>
+
+## Reflection
+
+<Todo label="Kennedy: what you learned">
+  Two or three real lessons. For example: what did you learn about making people feel safe to speak? What would you change next time?
+</Todo>
