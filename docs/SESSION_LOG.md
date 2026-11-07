@@ -147,7 +147,9 @@ Newest entry on top. Claude Code: read the latest entry at the start of every se
 
 **Open**
 - Kennedy answered: her role (owned it, used AI to build it), why she built it, why teams are assigned, a short outcome, and what she learned. Those Todos are filled with her words.
-- Still open: how many people played, the three commitments, a quote, and "what you noticed".
+- Kennedy said 7 people played. Added.
+- Kennedy asked me to make up the commitments; declined (portfolio rule: no invented results). Asked her to paste the real ones from the game's Copy summary.
+- Still open: the three real commitments, a quote, and "what you noticed".
 - Screenshots were taken in a test setup without the game's real fonts and use sample ("Simulated") answers. Retake them from the live site.
 - Flip `hidden` to `false` once the Todos are answered and Nacho has looked at it.
 - Not built or previewed in this session (package installs were blocked). Run `npm install` then `npm run build`.
