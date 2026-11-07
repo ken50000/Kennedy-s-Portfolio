@@ -7,21 +7,21 @@ category: Web app · Team game
 tools: AI (Claude) to build it, Vercel, GitHub
 order: 9
 cover:
-  alt: The facilitator dashboard for The Elephant in the Room, showing three live numbers, the newest answer, and answers grouped by theme
-  hint: A screenshot of the facilitator dashboard
+  alt: The Elephant in the Room home page, with a blue cartoon elephant saying "ahem", the tagline "Speak up. Work together. Make things better.", and a QR code for players to join
+  hint: A screenshot of the home page
 status: draft
-hidden: true   # flip to false once the Todos below are answered and Nacho has looked at it
+hidden: true   # flip to false once Kennedy has confirmed the screenshots and Nacho has looked at it
 ---
 import ImageSlot from '../../components/ImageSlot.astro';
 import Todo from '../../components/Todo.astro';
 import Bento from '../../components/Bento.astro';
 
 {/*
-  Source: the game itself, and what Kennedy asked for while it was built (Nov 5–7, 2026): the brief, the team
-  assignment change, the simpler dashboard, no accounts for players, and phone and desktop layouts.
-  Screenshots were taken in a test setup that could not load the game's real fonts, and show sample ("Simulated")
-  answers. Retake the hero shots from the live site before this goes public.
-  Role, motivation, team-assignment reason, outcome, and lesson are Kennedy's own words (Nov 7, 2026). The commitments are from her screenshot of the game's vote screen (Nov 7). 7 players is hers. No quote yet, and none is needed.
+  Source: the game itself, and what Kennedy told me (Nov 5-7, 2026). Role, motivation, team-assignment reason,
+  outcome, what she noticed, and lesson are her own words. The three commitments come from her screenshot of the
+  game's vote screen, and 7 players is hers.
+  Screenshots are hers, from the live game (Nov 7). They show real, anonymous answers from her coworkers.
+  Confirm she is happy to show them publicly before this goes live.
 */}
 
 ## The problem
@@ -42,6 +42,14 @@ I owned this project from the idea to the finished game, and I used AI to build 
 **2. Survival Challenge.** Players are placed on teams automatically. Each team gets a workplace scenario, a mission, three discussion prompts, and a countdown. There are five scenarios, from a miscommunication to a broken process. Teams submit one solution, then award badges to other teams' ideas. Points reward teamwork: 5 for a solution and 10 for each badge from another team. Complaining earns nothing.
 
 **3. Resolution Room.** The room sees its top five concerns and the best solutions, then votes for three commitments. Each commitment gets an owner, a status, and a 30-day follow-up date, with a summary the team can copy.
+
+<ImageSlot
+  folder="elephant-in-the-room"
+  name="how-it-works"
+  alt="The home page's three rounds, each with an illustration: Speak Up, Solve Together, and Make a Difference. Below them are four promises: no names, skip anything, moderated, and points for teamwork"
+  hint="The 'Three rounds, one hour' section of the home page"
+  wide
+/>
 
 ## Design decisions
 
@@ -65,23 +73,25 @@ I owned this project from the idea to the finished game, and I used AI to build 
 
 <ImageSlot
   folder="elephant-in-the-room"
-  name="challenge-host"
-  alt="The facilitator's live view of a challenge: the scenario, a countdown, team solutions, and the badge voting controls"
-  hint="The facilitator's challenge screen"
+  name="dashboard"
+  alt="The facilitator dashboard during Round 1: three numbers for players joined, finished, and answers; the newest answer; and answers grouped by theme, starting with Communication"
+  hint="The facilitator dashboard"
   wide
 />
-
-<Bento>
-  <ImageSlot folder="elephant-in-the-room" name="voting" alt="A phone showing the Miscommunication Maze challenge, the player's team, a sent solution, and five badges to award" hint="The player's challenge and voting screen" />
-  <ImageSlot folder="elephant-in-the-room" name="resolution-phone" alt="A phone showing the Resolution Room, where players vote for the team's commitments" hint="The player's Resolution Room screen" />
-</Bento>
 
 <ImageSlot
   folder="elephant-in-the-room"
   name="resolution"
-  alt="The Resolution Room on a laptop: the top five team concerns, best solutions, and the three commitments the team chose"
-  hint="The facilitator's Resolution Room screen"
+  alt="The Resolution Room on a laptop: the team's top five concerns ranked by number of anonymous answers, the most-supported improvements, and the best collaborative solutions"
+  hint="The Resolution Room"
   wide
+/>
+
+<ImageSlot
+  folder="elephant-in-the-room"
+  name="commitments-phone"
+  alt="A phone showing the Resolution Room vote: six possible commitments, with three chosen and a Cast my votes button"
+  hint="The phone voting screen"
 />
 
 ## Accessibility and screen sizes

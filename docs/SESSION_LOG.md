@@ -142,7 +142,7 @@ Newest entry on top. Claude Code: read the latest entry at the start of every se
 ## 2026-11-07: Added The Elephant in the Room (hidden draft)
 **Changed**
 - New case study: The Elephant in the Room (`elephant-in-the-room.mdx`), order 9, `hidden: true` so it does not show on the live site yet.
-- Added 5 screenshots in `src/images/elephant-in-the-room/` (facilitator dashboard as the cover, challenge, phone voting, phone resolution, facilitator resolution).
+- Added Kennedy's own screenshots from the live game in `src/images/elephant-in-the-room/` (home page as the cover, three rounds, facilitator dashboard, Resolution Room, phone vote). They show real anonymous answers from her coworkers.
 - Text covers only what Kennedy asked for while building the game. No results, testers, or lessons were invented.
 
 **Open**
@@ -150,8 +150,7 @@ Newest entry on top. Claude Code: read the latest entry at the start of every se
 - Kennedy said 7 people played. Added.
 - Kennedy asked me to make up the commitments; declined (portfolio rule: no invented results). Asked her to paste the real ones from the game's Copy summary.
 - Kennedy gave the three commitments (screenshot of the game's vote screen) and what she noticed. All Todos on this page are now filled.
-- Still open: retake the screenshots from the live site, Nacho's review, then set `hidden: false`.
-- Screenshots were taken in a test setup without the game's real fonts and use sample ("Simulated") answers. Retake them from the live site.
+- Still open: Kennedy confirms she is happy to show her coworkers' anonymous answers publicly, Nacho's review, then set `hidden: false`. (Stand-in screenshots were replaced with hers.)
 - Flip `hidden` to `false` once the Todos are answered and Nacho has looked at it.
 - Not built or previewed in this session (package installs were blocked). Run `npm install` then `npm run build`.
 
