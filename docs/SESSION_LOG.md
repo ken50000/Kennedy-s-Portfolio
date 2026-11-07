@@ -139,20 +139,17 @@ Newest entry on top. Claude Code: read the latest entry at the start of every se
 
 ---
 
-## 2026-11-07: Added The Elephant in the Room (hidden draft)
+## 2026-11-07: Added The Elephant in the Room (live)
 **Changed**
-- New case study: The Elephant in the Room (`elephant-in-the-room.mdx`), order 9, `hidden: true` so it does not show on the live site yet.
-- Added Kennedy's own screenshots from the live game in `src/images/elephant-in-the-room/` (home page as the cover, three rounds, facilitator dashboard, Resolution Room, phone vote). They show real anonymous answers from her coworkers.
-- Text covers only what Kennedy asked for while building the game. No results, testers, or lessons were invented.
+- New case study: The Elephant in the Room (`elephant-in-the-room.mdx`), order 9, visible on the home page. Kennedy asked for it to go live.
+- Uses the open cinematic layout with a phone frame, like Texstyle. Video: `public/media/elephant.mp4` (a screen recording of the game on a phone-sized screen, with sample "Simulated" answers) and `elephant-poster.jpg`.
+- Cover and screenshots are Kennedy's own, from the live game. The dashboard and Resolution Room images are cropped and blurred so no coworker's answer text shows.
+- Text is Kennedy's own words: role, why she built it, why teams are assigned, outcome, what she noticed, what she learned. 7 players and the three commitments are hers.
 
 **Open**
-- Kennedy answered: her role (owned it, used AI to build it), why she built it, why teams are assigned, a short outcome, and what she learned. Those Todos are filled with her words.
-- Kennedy said 7 people played. Added.
-- Kennedy asked me to make up the commitments; declined (portfolio rule: no invented results). Asked her to paste the real ones from the game's Copy summary.
-- Kennedy gave the three commitments (screenshot of the game's vote screen) and what she noticed. All Todos on this page are now filled.
-- Still open: Kennedy confirms she is happy to show her coworkers' anonymous answers publicly, Nacho's review, then set `hidden: false`. (Stand-in screenshots were replaced with hers.)
-- Flip `hidden` to `false` once the Todos are answered and Nacho has looked at it.
-- Not built or previewed in this session (package installs were blocked). Run `npm install` then `npm run build`.
+- The video was recorded in a test setup without the game's real fonts (stand-in typeface). Re-record it on a real phone and replace the two files in `public/media/`.
+- Nacho's review. Kennedy chose to publish before it.
+- Not built or previewed in this session (package installs were blocked). Run `npm install` then `npm run build`, and check the Actions tab on GitHub after the push.
 
 ---
 

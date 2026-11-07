@@ -9,109 +9,134 @@ order: 9
 cover:
   alt: The Elephant in the Room home page, with a blue cartoon elephant saying "ahem", the tagline "Speak up. Work together. Make things better.", and a QR code for players to join
   hint: A screenshot of the home page
+cinematic:
+  video: /media/elephant.mp4
+  poster: /media/elephant-poster.jpg
+  device: phone
+  ratio: "390 / 844"
+  kicker: Case study · Team game · Built with AI
+  mark: form
+  accent: "#ffc83d"
+  accentHot: "#ffd56a"
+  accentInk: "#0a1433"
+  accentGrad: "linear-gradient(115deg, #ffe08a 0%, #ffc83d 40%, #f0a800 75%, #c98a00 100%)"
 status: draft
-hidden: true   # flip to false once Kennedy has confirmed the screenshots and Nacho has looked at it
 ---
 import ImageSlot from '../../components/ImageSlot.astro';
-import Todo from '../../components/Todo.astro';
-import Bento from '../../components/Bento.astro';
 
 {/*
-  Source: the game itself, and what Kennedy told me (Nov 5-7, 2026). Role, motivation, team-assignment reason,
-  outcome, what she noticed, and lesson are her own words. The three commitments come from her screenshot of the
-  game's vote screen, and 7 players is hers.
-  Screenshots are hers, from the live game (Nov 7). They show real, anonymous answers from her coworkers.
-  Confirm she is happy to show them publicly before this goes live.
+  Open cinematic page (no passcode): the phone flips in and the game plays (public/media/elephant.mp4, a screen
+  recording of the game on a phone-sized screen, played with sample "Simulated" answers).
+  Facts: Kennedy's own words (Nov 7, 2026): her role, why she built it, why teams are assigned, the outcome, what she
+  noticed, and what she learned. 7 players and the three commitments are hers (commitments from her screenshot of
+  the vote screen). Screenshots are hers, from the live game. The dashboard and Resolution Room images are cropped
+  and blurred so no coworker's answer text shows.
+  The video was recorded in a test setup that could not load the game's real fonts (it uses a stand-in typeface).
+  Re-record it on a real phone to replace public/media/elephant.mp4 and elephant-poster.jpg.
 */}
 
-## The problem
+<div class="cine-glance">
+  <div><span class="cine-label">In one line</span><p>A phone game that turns a team's anonymous grievances into solutions and commitments they choose together.</p></div>
+  <div><span class="cine-label">My role</span><p>I owned the project from the idea to the finished game. I used AI to build it.</p></div>
+  <div><span class="cine-label">Context</span><p>A team-building session for my own team. Seven coworkers played.</p></div>
+  <div><span class="cine-label">Deliverables</span><p>A working web game for phones and laptops, a facilitator dashboard, and a shared summary.</p></div>
+</div>
 
-My team has real issues. I built an app where people can raise their grievances at work anonymously. The app turns them into use cases the team solves together.
+<section class="cine-sec" id="overview">
+  <header><span class="cine-num">01</span><h2>Project overview</h2></header>
+  <div>
+    <p class="cine-lede">The Elephant in the Room helps a team say the hard thing, safely, and then choose what to do about it together.</p>
+    <p>Coworkers join from their own phones by scanning a QR code. There is no account and no email. A facilitator runs the session from a laptop.</p>
+    <p>The game has three rounds: speak up, solve together, and make a difference.</p>
+  </div>
+</section>
 
-I owned this project from the idea to the finished game, and I used AI to build it.
+<section class="cine-sec" id="problem">
+  <header><span class="cine-num">02</span><h2>The problem</h2></header>
+  <div>
+    <p class="cine-lede">My team has real issues. I built an app where people can raise their grievances at work anonymously.</p>
+    <p>The app turns those grievances into use cases the team solves together.</p>
+    <h3>Who it's for</h3>
+    <ol class="cine-flow cols-2">
+      <li><b>Players</b><span>Coworkers on their own phones, in a room together. Joining takes seconds.</span></li>
+      <li><b>The facilitator</b><span>One person running the session. They need to stay with the room, not babysit the screen.</span></li>
+    </ol>
+  </div>
+</section>
 
-## Who it's for
+<section class="cine-sec" id="rounds">
+  <header><span class="cine-num">03</span><h2>The three rounds</h2></header>
+  <div>
+    <ol class="cine-flow">
+      <li><b>1. Speak Up</b><span>Everyone answers six questions without names. Any question can be skipped. The last one asks what the team does well.</span></li>
+      <li><b>2. Solve Together</b><span>Players are placed on teams. Each team gets a workplace scenario and a countdown, submits a solution, then awards badges to other teams' ideas.</span></li>
+      <li><b>3. Make a Difference</b><span>The room sees its top concerns and votes for three commitments. Each gets an owner and a 30-day follow-up.</span></li>
+    </ol>
+    <p>Points reward teamwork: 5 for submitting a solution and 10 for each badge from another team. Complaining earns nothing.</p>
+  </div>
+  <figure class="cine-fig cine-full">
+    <ImageSlot folder="elephant-in-the-room" name="how-it-works" alt="The home page's three rounds, each with an illustration: Speak Up, Solve Together, and Make a Difference. Below them are four promises: no names, skip anything, moderated, and points for teamwork" hint="The 'Three rounds, one hour' section of the home page" wide />
+    <figcaption><b>The home page.</b> The three rounds, and four promises players can see before they start.</figcaption>
+  </figure>
+</section>
 
-- **Players:** coworkers on their own phones, in a room together. Joining has to take seconds, with no account and no email.
-- **The facilitator:** one person running the session from a laptop. They need to stay with the room, not babysit the screen.
+<section class="cine-sec" id="decisions">
+  <header><span class="cine-num">04</span><h2>Design decisions</h2></header>
+  <div>
+    <h3>Safe, and honest about it</h3>
+    <p>There are no names anywhere. Every question can be skipped, and the facilitator can hide any answer. I chose not to promise total anonymity. The app says answers are shown without names, because I can't promise more than that.</p>
+    <h3>Sample players are always labeled</h3>
+    <p>The facilitator can fill the room with practice players to rehearse. Every simulated answer is tagged "Simulated", so it can never be mistaken for a real one.</p>
+    <h3>Teams are assigned for you</h3>
+    <p>The first version let people choose their team. I changed it so each phone is simply told which team it's on, and to find the others and sit together. Players don't choose their team. Assigned teams make every group work together and leave no room for bias.</p>
+    <h3>A calmer facilitator dashboard</h3>
+    <p>The first dashboard felt like too much to take in, so I cut it down to one column.</p>
+    <ol class="cine-flow cols-2">
+      <li><b>Three numbers</b><span>Players joined, finished, and answers.</span></li>
+      <li><b>One "Just in" line</b><span>It replaced a scrolling feed.</span></li>
+      <li><b>Themes that open and close</b><span>Only the biggest theme is open at first.</span></li>
+      <li><b>Three actions per answer</b><span>Discuss, Hide, and More.</span></li>
+    </ol>
+    <p>Rarely used controls (practice players, presenter view, reset) sit behind one "More tools" button.</p>
+    <h3>No accounts for players</h3>
+    <p>An early version needed people to be invited, and a coworker couldn't take part. I moved the game to its own site, so players only need a link, and only I need a passcode.</p>
+  </div>
+</section>
 
-## The idea: three rounds
+<section class="cine-sec" id="solution">
+  <header><span class="cine-num">05</span><h2>The solution</h2></header>
+  <div>
+    <p class="cine-lede">One link for players, one passcode for the facilitator, and a screen for each.</p>
+    <p>The video above plays the game on a phone with sample answers, from the welcome screen to the badge voting. The screens below come from the live game.</p>
+    <p>The game works on phones and laptops. I checked its layouts from a small 320 pixel phone to a large desktop, in light and dark. Players can choose their text size and turn motion down. Every control shows a clear focus outline, and no meaning depends on colour alone.</p>
+  </div>
+  <figure class="cine-fig cine-full">
+    <ImageSlot folder="elephant-in-the-room" name="dashboard" alt="The facilitator dashboard during Round 1: three numbers for players joined, finished, and answers, a blurred newest-answer line, and answers grouped by theme starting with Communication" hint="The facilitator dashboard" wide />
+    <figcaption><b>Facilitator dashboard.</b> Three numbers and answers grouped by theme. The newest answer is blurred here for privacy.</figcaption>
+  </figure>
+  <figure class="cine-fig cine-full">
+    <ImageSlot folder="elephant-in-the-room" name="resolution" alt="The Resolution Room on a laptop: the team's top five concerns ranked by number of anonymous answers, and the most-supported improvements" hint="The Resolution Room" wide />
+    <figcaption><b>Resolution Room.</b> The team's top five concerns, ranked by how many people raised them.</figcaption>
+  </figure>
+  <figure class="cine-fig">
+    <ImageSlot folder="elephant-in-the-room" name="commitments-phone" alt="A phone showing the Resolution Room vote: six possible commitments, with three chosen and a Cast my votes button" hint="The phone voting screen" ratio="992 / 1834" />
+    <figcaption><b>Voting.</b> Each player picks up to three commitments on their phone.</figcaption>
+  </figure>
+</section>
 
-**1. Speak Up.** Everyone answers six questions on their phone, without names. Any question can be skipped. The last question asks what the team does really well, so the session doesn't end on a complaint. Answers sort into seven themes that the facilitator can regroup, pin, or hide.
-
-**2. Survival Challenge.** Players are placed on teams automatically. Each team gets a workplace scenario, a mission, three discussion prompts, and a countdown. There are five scenarios, from a miscommunication to a broken process. Teams submit one solution, then award badges to other teams' ideas. Points reward teamwork: 5 for a solution and 10 for each badge from another team. Complaining earns nothing.
-
-**3. Resolution Room.** The room sees its top five concerns and the best solutions, then votes for three commitments. Each commitment gets an owner, a status, and a 30-day follow-up date, with a summary the team can copy.
-
-<ImageSlot
-  folder="elephant-in-the-room"
-  name="how-it-works"
-  alt="The home page's three rounds, each with an illustration: Speak Up, Solve Together, and Make a Difference. Below them are four promises: no names, skip anything, moderated, and points for teamwork"
-  hint="The 'Three rounds, one hour' section of the home page"
-  wide
-/>
-
-## Design decisions
-
-**Safe, and honest about it.** There are no names anywhere. Every question can be skipped, and the facilitator can hide any answer. I chose not to promise total anonymity. The app says answers are shown without names, because I can't promise more than that.
-
-**Sample players are always labeled.** The facilitator can fill the room with practice players to rehearse. Every simulated answer is tagged "Simulated", so it can never be mistaken for a real one.
-
-**Teams are assigned for you.** The first version let people choose their team. I changed it so each phone is simply told which team it's on, and to find the others and sit together. Players don't choose their team. Assigned teams make every group work together and leave no room for bias.
-
-**A calmer facilitator dashboard.** The first dashboard felt like too much to take in, so I cut it down to one column:
-
-- three numbers: players joined, finished, and answers
-- one "Just in" line instead of a scrolling feed
-- themes that open and close, with only the biggest one open at first
-- three actions on each answer: Discuss, Hide, and More
-- rarely used controls (practice players, presenter view, reset) behind one "More tools" button
-
-**No accounts for players.** An early version needed people to be invited, and a coworker couldn't take part. I moved the game to its own site, so players only need a link, and only I need a passcode.
-
-## The solution
-
-<ImageSlot
-  folder="elephant-in-the-room"
-  name="dashboard"
-  alt="The facilitator dashboard during Round 1: three numbers for players joined, finished, and answers; the newest answer; and answers grouped by theme, starting with Communication"
-  hint="The facilitator dashboard"
-  wide
-/>
-
-<ImageSlot
-  folder="elephant-in-the-room"
-  name="resolution"
-  alt="The Resolution Room on a laptop: the team's top five concerns ranked by number of anonymous answers, the most-supported improvements, and the best collaborative solutions"
-  hint="The Resolution Room"
-  wide
-/>
-
-<ImageSlot
-  folder="elephant-in-the-room"
-  name="commitments-phone"
-  alt="A phone showing the Resolution Room vote: six possible commitments, with three chosen and a Cast my votes button"
-  hint="The phone voting screen"
-/>
-
-## Accessibility and screen sizes
-
-- Light, dark, or automatic look, three text sizes, and a reduced-motion setting, all chosen by the viewer.
-- A visible focus outline on every control, and focus moves to the page heading on each new screen.
-- Controls are at least 44 pixels tall, and colour is never the only way to tell themes apart.
-- The layouts were checked from a small 320 pixel phone to a 1920 pixel desktop, in light and dark. The dashboard overflowed on small phones, and I fixed it.
-- Before the session, the whole flow was run from start to finish with automated tests, with a facilitator and several players at once.
-
-## Outcome
-
-Seven coworkers played. They had an open, flowing conversation about the grievances and blockers they face at work. Now they can work out together how to help each other get past those blockers.
-
-The game offers commitments drawn from the team's top themes. These are the three the team chose:
-
-- Send a short written decision summary within 24 hours of every key meeting.
-- Pick one recurring process pain point each sprint and fix or retire it.
-- Open every planning meeting with a two-minute "what are we missing?" round.
-
-## Reflection
-
-AI is a useful way to start team bonding.
+<section class="cine-sec" id="outcome">
+  <header><span class="cine-num">06</span><h2>Outcomes &amp; reflection</h2></header>
+  <div>
+    <p class="cine-lede">Seven coworkers played.</p>
+    <p>They had an open, flowing conversation about the grievances and blockers they face at work. Now they can work out together how to help each other get past those blockers.</p>
+    <h3>The three commitments the team chose</h3>
+    <p>The game offers commitments drawn from the team's top themes. These are the three the team chose:</p>
+    <ul>
+      <li>Send a short written decision summary within 24 hours of every key meeting.</li>
+      <li>Pick one recurring process pain point each sprint and fix or retire it.</li>
+      <li>Open every planning meeting with a two-minute "what are we missing?" round.</li>
+    </ul>
+    <h3>What I learned</h3>
+    <p>AI is a useful way to start team bonding.</p>
+  </div>
+</section>
