@@ -4,6 +4,14 @@ Newest entry on top. Claude Code: read the latest entry at the start of every se
 
 ---
 
+## 2026-11-08: ReimburseMe outcome
+- Locked ReimburseMe case study: Kennedy's outcome for her flows replaces the "your impact" note (her words,
+  in short sentences), and the at-a-glance Outcome is filled. Re-locked with the same passcode.
+- Open: a proof point for the outcome (feedback, fewer errors, or similar), if she has one. Program results and
+  reflection notes are still open.
+
+---
+
 ## 2026-11-08: Home page intro
 - Replaced the "intro line" note with Kennedy's own two-sentence intro (her words, unchanged). The earlier
   Walmart/Ani line stays below it in smaller text, lightly reworded so "UX designer" isn't said twice.
