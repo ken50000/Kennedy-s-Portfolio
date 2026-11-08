@@ -4,6 +4,18 @@ Newest entry on top. Claude Code: read the latest entry at the start of every se
 
 ---
 
+## 2026-11-08: ReimburseMe answers
+- Locked ReimburseMe case study: added Kennedy's answers for the goal, the associate's side, collaboration, what
+  shaped her flows (Missing Receipt Affidavit testing, 5 participants), and reflection. Re-locked, same passcode.
+- Removed "led discovery" wording from the reflection (CLAUDE.md: don't claim discovery at her level).
+- Held back, to confirm with her: the story/timeline (her answer says she joined through her 2024 internship and
+  went full-time July 2025, which conflicts with the page and with her Intake internship), the OCR decision
+  (her draft says to confirm it), the VQA example (her draft calls it "representative"), and the $21M+
+  program figure (is it savings or something else; OK to show?).
+- New narrower notes: one concrete itemization change after feedback; one affidavit finding. Notes: 11 → 8.
+
+---
+
 ## 2026-11-08: ReimburseMe outcome
 - Locked ReimburseMe case study: Kennedy's outcome for her flows replaces the "your impact" note (her words,
   in short sentences), and the at-a-glance Outcome is filled. Re-locked with the same passcode.
