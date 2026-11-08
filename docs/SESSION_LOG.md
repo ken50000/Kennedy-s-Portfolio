@@ -4,6 +4,12 @@ Newest entry on top. Claude Code: read the latest entry at the start of every se
 
 ---
 
+## 2026-11-08: Home page intro
+- Replaced the "intro line" note with Kennedy's own two-sentence intro (her words, unchanged). The earlier
+  Walmart/Ani line stays below it in smaller text, lightly reworded so "UX designer" isn't said twice.
+
+---
+
 ## 2026-11-07: Texstyle from her case study draft
 **Changed**
 - Rewrote the Texstyle case study from Kennedy's own TexStyle draft: overview, design question, who it's for,

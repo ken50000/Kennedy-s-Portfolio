@@ -20,15 +20,15 @@ const studies = (await getCollection('case-studies'))
         <p class="role">{site.role}</p>
         <div class="intro-text">
           <p class="intro">
-            I'm Kennedy, a UX designer at Walmart Global Tech. I design the UI for ReimburseMe, the app associates use
-            to get their expenses paid back. Before that, I helped launch Ani, an animanga social app, from its first
+            I'm a UX designer who specializes in creating intuitive, visually polished experiences and simplifying
+            complex workflows. I combine strong UI design, user-centered research, and rapid prototyping to turn
+            complicated business problems into thoughtful, accessible solutions that make products easier to use.
+          </p>
+          <p class="intro-sub">
+            I'm Kennedy. At Walmart Global Tech, I design the UI for ReimburseMe, the app associates use to get
+            their expenses paid back. Before that, I helped launch Ani, an animanga social app, from its first
             screens.
           </p>
-          <Todo label="Kennedy: intro line">
-            Rewrite the intro in your own voice, 2 sentences max. Lead with what you're great at (UI craft? visual QA?
-            design systems?). Your old line was "a UX designer specializing in design systems and complex internal
-            tools". Keep it only if you can back it up with the case studies below.
-          </Todo>
           <dl class="meta">
             <div><dt class="mono">Experience</dt><dd>{site.experience}</dd></div>
             <div><dt class="mono">Based in</dt><dd>{site.location}</dd></div>
@@ -86,6 +86,7 @@ const studies = (await getCollection('case-studies'))
     letter-spacing: -0.025em;
     margin: 0 0 1.25rem;
   }
+  .intro-sub { margin: 0 0 1.25rem; color: var(--muted, inherit); max-width: 60ch; }
   .meta { margin: 0.5rem 0 0; display: grid; grid-template-columns: 1fr 1fr; border-top: 2px solid var(--accent); }
   .meta div { padding: 0.9rem 1rem 0.6rem; }
   .meta div:nth-child(odd) { padding-left: 0; }
