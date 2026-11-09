@@ -4,6 +4,21 @@ Newest entry on top. Claude Code: read the latest entry at the start of every se
 
 ---
 
+## 2026-11-09 (later): Her answers to the must-answer list
+**Changed**
+- Ani: cover credit "Cover illustration by Kyle Kelley." Workforce Planning: role UX Designer; Nacho OK'd showing
+  LD3.5 and Sidekick. Fitness Bingo: sole designer, graphic design class. Topcoder: name confirmed. Data Hub: role
+  UX Design Lead, timeline "Coming soon · Q4". Site: 6 years of experience; email kept (it's on her résumé).
+  Removed "music production" from the home page (she does make music but doesn't want it on the site).
+
+**Open**
+- Workforce Planning: dates, and which parts she did. Fitness Bingo: semester/year and class name. Topcoder:
+  job/freelance/school, when, team. Intake: what she did, who with. ReimburseMe: which screens are hers.
+- Résumé NOT published: the PDF she sent includes her phone and home address, and says "Jul 2024 – Present" and
+  claims (lead UX strategy, ~45 min → ~30 s) that don't match the site. Waiting on her.
+
+---
+
 ## 2026-11-09: Trimmed to the must-answer questions
 **Changed**
 - Kennedy asked Claude to drop optional notes so only must-answer questions remain. Removed optional notes

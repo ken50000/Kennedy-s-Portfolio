@@ -9,9 +9,9 @@ export const site = {
   name: 'Kennedy Campbell',
   role: 'UX Designer', // Confirmed: her own intro (2026-11-08) calls her a UX designer.
   location: 'Bentonville, Arkansas',
-  email: 'campbellkennedy09@gmail.com', // TODO: confirm this is the email she wants public
+  email: 'campbellkennedy09@gmail.com', // Public on her own résumé (2026-11-09).
   linkedin: 'https://www.linkedin.com/in/kennedypcampbell/',
-  experience: '4 years of experience', // TODO: confirm. Product design since Feb 2022 (Ani). Old drafts said 5 or 6.
+  experience: '6 years of experience', // Kennedy confirmed 6 years (2026-11-09).
   description:
     'Kennedy Campbell is a UX designer at Walmart Global Tech designing UI for enterprise finance tools.',
 };
