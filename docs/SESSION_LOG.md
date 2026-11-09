@@ -4,6 +4,18 @@ Newest entry on top. Claude Code: read the latest entry at the start of every se
 
 ---
 
+## 2026-11-09 (later): Unrolling résumé and case study parallax
+- Résumé page: the résumé is now a cream paper scroll between two dark rollers with red end caps. On load it
+  unrolls: the on-screen part over ~1.7 s, the rest quickly, with each section fading in as the roller passes.
+  Any scroll, key, tap, or click finishes it instantly. Without JavaScript or with reduced motion it just shows.
+- Case study pages (standard and cinematic): gentle parallax while reading (`public/parallax.js`): pictures drift
+  inside their frames, phone screens move at alternating speeds, section numbers and headings float a little,
+  the background waveform drifts, and standard sections fade up. Off with reduced motion, softer on phones.
+  The home page and 3D carousel are unchanged (her choice).
+- Check builds now save the built site to a `preview-build` branch for previewing before going live.
+
+---
+
 ## 2026-11-09 (later): Full résumé on the Résumé page
 - The Résumé page now shows the whole résumé as real text (summary, experience, projects, education, skills)
   in the site's style, with a "Download PDF" button at the top and bottom. Content lives in
