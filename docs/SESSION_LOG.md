@@ -4,6 +4,26 @@ Newest entry on top. Claude Code: read the latest entry at the start of every se
 
 ---
 
+## 2026-11-09: Trimmed to the must-answer questions
+**Changed**
+- Kennedy asked Claude to drop optional notes so only must-answer questions remain. Removed optional notes
+  (extra examples, decisions, research details, reflections, outcomes) across all case studies and About;
+  sections left empty were removed and renumbered (TexStyle, Fitness Bingo and Workforce Planning reflections;
+  locked Data Hub research; locked Intake research and impact). Nothing was invented to fill them.
+- Ani: her title is UX Design Lead (she stated it). Updated Ani's role and the About page. Removed the Ani
+  wireframes section (unclear if they were made during the project or traced later).
+- Site title confirmed as UX Designer (her own intro).
+- Backup of the locked originals before this trim: scratchpad private-backup-1109 (not in repo).
+
+**Still open (must-answer)**
+- Ani cover illustration: who drew it.
+- Workforce Planning: title, dates, team, what she did; Nacho's OK to show LD3.5/Sidekick.
+- Fitness Bingo: class, when, team, her part. Topcoder: who for, when, team, TopCrowd vs Topcoder.
+- Data Hub: her role and timeline. Intake: what she did and with whom. ReimburseMe: which screens are hers.
+- Public email, years of experience, "music production", résumé PDF.
+
+---
+
 ## 2026-11-09: ReimburseMe program numbers left out
 - Kennedy let Claude decide on the $21M+ program figure. Decision: leave program numbers out of the case study
   (unclear if it's savings or a projection, and whether it's OK to share). Removed the "program results" note.

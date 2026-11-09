@@ -7,7 +7,7 @@ export const url = (path: string) => `${import.meta.env.BASE_URL.replace(/\/$/, 
 
 export const site = {
   name: 'Kennedy Campbell',
-  role: 'UX Designer', // TODO: confirm primary title (her drafts also say "Visual/Content Designer")
+  role: 'UX Designer', // Confirmed: her own intro (2026-11-08) calls her a UX designer.
   location: 'Bentonville, Arkansas',
   email: 'campbellkennedy09@gmail.com', // TODO: confirm this is the email she wants public
   linkedin: 'https://www.linkedin.com/in/kennedypcampbell/',
