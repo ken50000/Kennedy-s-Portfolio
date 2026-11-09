@@ -4,6 +4,13 @@ Newest entry on top. Claude Code: read the latest entry at the start of every se
 
 ---
 
+## 2026-11-09 (later): Full résumé on the Résumé page
+- The Résumé page now shows the whole résumé as real text (summary, experience, projects, education, skills)
+  in the site's style, with a "Download PDF" button at the top and bottom. Content lives in
+  `src/pages/resume.astro`; keep it in sync with `public/resume.pdf` (built from `docs/resume-source.html`).
+
+---
+
 ## 2026-11-09 (later): Résumé and start date
 - Start date corrected: Kennedy chose "late summer 2024" (full-time right after the internship; month not
   given). ReimburseMe case study, timeline ("2024 – present"), and About ("2024 – now") updated; the earlier
