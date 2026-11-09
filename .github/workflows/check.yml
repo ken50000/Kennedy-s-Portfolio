@@ -3,6 +3,8 @@ name: Check build
 on:
   push:
     branches-ignore: [main]
+permissions:
+  contents: write
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -17,8 +19,10 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run build
-      - uses: actions/upload-artifact@v4
-        with:
-          name: preview
-          path: dist
-          retention-days: 3
+      # Save the built site to a "preview-build" branch so it can be checked before going live.
+      - run: |
+          cd dist
+          git init -q -b preview-build
+          git add -A
+          git -c user.name=ci -c user.email=ci@users.noreply.github.com commit -qm "preview of ${GITHUB_SHA::7}"
+          git push -qf "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" preview-build
