@@ -157,9 +157,12 @@ const tools = ['Figma', 'Figma Make', 'Adobe Creative Suite', 'Miro', 'Jira', 'C
       box.classList.add('is-rolling', 'is-starting');
       const H = paper.offsetHeight;
       const tops = parts.map((el) => el.offsetTop);
-      const dur = Math.max(1300, Math.min(2600, H * 0.6));
+      // Unroll the part on screen slowly enough to watch, then the rest quickly.
+      const onScreen = Math.max(200, Math.min(H, innerHeight - paper.getBoundingClientRect().top - 40));
+      const T1 = 1700, T2 = H > onScreen ? 700 : 0, dur = T1 + T2;
       let t0 = 0, done = false;
       const ease = (x) => 1 - Math.pow(1 - x, 3);
+      const easeIO = (x) => (x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2);
       function set(open) {
         box.style.setProperty('--open', open.toFixed(1) + 'px');
         box.style.setProperty('--spin', (open * 0.9).toFixed(1) + 'px');
@@ -178,9 +181,10 @@ const tools = ['Figma', 'Figma Make', 'Adobe Creative Suite', 'Miro', 'Jira', 'C
       function frame(now) {
         if (done) return;
         if (!t0) t0 = now;
-        const x = Math.min(1, (now - t0) / dur);
-        set(H * ease(x));
-        x < 1 ? requestAnimationFrame(frame) : finish();
+        const t = now - t0;
+        const open = t < T1 ? onScreen * easeIO(t / T1) : onScreen + (H - onScreen) * ease(Math.min(1, (t - T1) / (T2 || 1)));
+        set(open);
+        t < dur ? requestAnimationFrame(frame) : finish();
       }
       set(0);
       ['wheel', 'keydown', 'touchstart', 'pointerdown'].forEach((e) => addEventListener(e, finish, { passive: true }));
