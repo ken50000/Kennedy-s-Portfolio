@@ -4,25 +4,182 @@ import Base from '../layouts/Base.astro';
 import Todo from '../components/Todo.astro';
 import { url } from '../site';
 
-// Drop the final résumé at public/resume.pdf and this page links to it automatically.
+// The full résumé, shown as real text. Keep it in sync with public/resume.pdf
+// (the PDF is built from docs/resume-source.html). Phone and street address stay off on purpose.
 const hasPdf = fs.existsSync('public/resume.pdf');
+
+const jobs = [
+  {
+    title: 'UX Designer', org: 'Walmart Global Tech', where: 'Bentonville, AR', when: '2024 – Present',
+    points: [
+      "Design the UI for ReimburseMe, Walmart's expense reimbursement app used by 9K+ associates, on a team led by a senior UX designer.",
+      'Designed end-to-end flows for receipt OCR capture, per diem, vehicle management, InComm and credit cards, and export; now own the UI for itemizations (splitting one receipt across expense types).',
+      'Partner with product managers and engineers through design reviews and working sessions; run visual QA against Figma before release.',
+      'Took part in usability testing of the Missing Receipt Affidavit flow with five participants.',
+      'UX Design Lead on a clickable prototype connecting Data Hub reports to Studio, an AI storytelling workspace (2 iterations, desktop and mobile).',
+      "UX designer on the Workforce Planning Portal redesign, moving a store scheduling tool onto Walmart's new design system.",
+    ],
+  },
+  {
+    title: 'Product Management Specialist Intern', org: 'Walmart Global Tech', where: 'Bentonville, AR', when: 'Jun – Aug 2024',
+    points: [
+      "Prioritized global service types in product roadmaps aligned with the Built Environment's technology and research strategy.",
+      'Ran competitive analysis and gathered client feedback with stakeholders to understand user needs and pain points.',
+      'Researched business needs and turned them into a prototype for an internal expense platform; presented deliverables to the CTO.',
+    ],
+  },
+  {
+    title: 'Web Design Intern', org: 'MSU ADA Accessibility', when: 'Jun 2024',
+    points: [
+      "Made wireframes, mockups, and prototypes; defined the client's vision and a long-term roadmap.",
+      'Ran usability tests and gathered user feedback to improve the experience.',
+    ],
+  },
+  {
+    title: 'UX Design Lead (contract)', org: 'Ani', where: 'Animanga social app', when: 'Feb 2022 – Jun 2025',
+    points: [
+      'Led product design for a platform where fans track, discover, and talk about anime and manga.',
+      'Designed the MVP from the ground up; it reached 10K+ downloads in its first month.',
+      'Built a scalable design system: color tokens, type scale, variants, and reusable components.',
+    ],
+  },
+];
+
+const projects = [
+  { title: 'TexStyle', when: 'Fall 2024', href: '/work/texstyle/',
+    text: 'Mobile shopping app that grades clothing on sustainability, labor, and transparency. Team of four (Michigan State, GD468 Interaction Design); Co-Director of Graphic Design and Content Strategy; ran usability tests with fashion students.' },
+  { title: 'Fitness Bingo', when: '', href: '/work/fitness-bingo/',
+    text: 'Mobile app that turns workouts into bingo challenges. Sole designer, for a graphic design class.' },
+];
+
+const practice = ['User research', 'Usability testing', 'Wireframing', 'Prototyping', 'Information architecture and user flows', 'Visual QA', 'Agile / Scrum', 'Feature definition and acceptance criteria'];
+const tools = ['Figma', 'Figma Make', 'Adobe Creative Suite', 'Miro', 'Jira', 'Confluence', 'HTML / CSS', 'GitHub', 'Wibey'];
 ---
 
 <Base title="Résumé">
-  <div class="prose page">
-    <h1 class="page-title bleed-red">Résumé</h1>
-    {hasPdf ? (
-      <p><a href={url('/resume.pdf')} class="big">Download my résumé (PDF) ↓</a></p>
-    ) : (
-      <Todo label="Kennedy: résumé">
-        Export your final résumé as a PDF, name it <code>resume.pdf</code>, and put it in the <code>public/</code> folder.
-        A draft is waiting for your review in the shared résumé doc Nacho sent you.
-      </Todo>
+  <div class="page">
+    <header class="r-head">
+      <div>
+        <h1 class="page-title bleed-red">Résumé</h1>
+        <p class="r-name">Kennedy Campbell <span>· UX Designer · Rogers, AR</span></p>
+      </div>
+      {hasPdf ? (
+        <a href={url('/resume.pdf')} class="r-dl" download="Kennedy-Campbell-Resume.pdf">
+          <span>Download PDF</span><span aria-hidden="true">↓</span>
+        </a>
+      ) : (
+        <Todo label="Kennedy: résumé">Put the PDF at <code>public/resume.pdf</code> to turn on the download button.</Todo>
+      )}
+    </header>
+
+    <section class="r-sec" aria-labelledby="r-summary">
+      <h2 id="r-summary" class="mono">Summary</h2>
+      <div>
+        <p class="r-lede">UX designer who creates intuitive, visually polished experiences and simplifies complex workflows. I combine UI design, user-centered research, and rapid prototyping to turn complicated business problems into accessible solutions that make products easier to use.</p>
+      </div>
+    </section>
+
+    <section class="r-sec" aria-labelledby="r-exp">
+      <h2 id="r-exp" class="mono">Experience</h2>
+      <div>
+        {jobs.map((j) => (
+          <article class="r-job">
+            <div class="r-row">
+              <h3>{j.title}</h3>
+              <p class="mono r-when">{j.when}</p>
+            </div>
+            <p class="r-org">{j.org}{j.where && <span> · {j.where}</span>}</p>
+            <ul>{j.points.map((p) => <li>{p}</li>)}</ul>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <section class="r-sec" aria-labelledby="r-proj">
+      <h2 id="r-proj" class="mono">Projects</h2>
+      <div>
+        {projects.map((p) => (
+          <article class="r-job">
+            <div class="r-row">
+              <h3><a href={url(p.href)}>{p.title}</a></h3>
+              {p.when && <p class="mono r-when">{p.when}</p>}
+            </div>
+            <p>{p.text}</p>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <section class="r-sec" aria-labelledby="r-edu">
+      <h2 id="r-edu" class="mono">Education</h2>
+      <div>
+        <div class="r-row">
+          <h3>Michigan State University</h3>
+          <p class="mono r-when">May 2025</p>
+        </div>
+        <p class="r-org">Bachelor of Arts, Experience Architecture (Human-Computer Interaction)</p>
+      </div>
+    </section>
+
+    <section class="r-sec" aria-labelledby="r-skills">
+      <h2 id="r-skills" class="mono">Skills</h2>
+      <div>
+        <p class="mono r-label">Practice</p>
+        <ul class="r-tags">{practice.map((t) => <li>{t}</li>)}</ul>
+        <p class="mono r-label">Tools</p>
+        <ul class="r-tags">{tools.map((t) => <li>{t}</li>)}</ul>
+      </div>
+    </section>
+
+    {hasPdf && (
+      <p class="r-foot">
+        <a href={url('/resume.pdf')} class="r-dl" download="Kennedy-Campbell-Resume.pdf"><span>Download PDF</span><span aria-hidden="true">↓</span></a>
+      </p>
     )}
   </div>
 </Base>
 
 <style>
-  .page { padding-top: 3rem; min-height: 50vh; }
-  .big { font-size: 1.5rem; }
+  .page { max-width: var(--wide); margin: 0 auto; padding: 3rem var(--gutter) 5rem; }
+  .r-head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 1.5rem;
+    padding-bottom: 1.5rem; border-bottom: var(--rule); }
+  .r-head .page-title { margin: 0; }
+  .r-name { margin: 0.5rem 0 0; font-size: 1.25rem; font-weight: 600; }
+  .r-name span { color: var(--muted); font-weight: 400; }
+
+  .r-dl { display: inline-flex; align-items: center; gap: 0.75rem; padding: 0.9rem 1.4rem;
+    border: var(--rule); background: var(--accent); color: var(--accent-ink); text-decoration: none;
+    font-family: var(--font-mono); font-size: 0.95rem; letter-spacing: 0.04em; text-transform: uppercase;
+    box-shadow: var(--shadow); transition: transform .15s, box-shadow .15s, background .15s; }
+  .r-dl:hover { background: var(--grad-red); transform: translate(-2px, -2px); box-shadow: 10px 10px 0 var(--accent); }
+  .r-dl:focus-visible { outline: 3px solid var(--link); outline-offset: 4px; }
+
+  .r-sec { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 3fr); gap: 2rem;
+    padding: 2.25rem 0; border-bottom: 2px solid var(--line-soft); }
+  .r-sec h2 { margin: 0.2rem 0 0; font-size: 0.85rem; font-weight: 500; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--red-hot); }
+  .r-lede { margin: 0; font-size: 1.2rem; line-height: 1.55; max-width: 62ch; }
+
+  .r-job + .r-job { margin-top: 1.9rem; }
+  .r-row { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 0.25rem 1rem; }
+  .r-row h3 { margin: 0; font-size: 1.2rem; }
+  .r-row h3 a { color: inherit; text-decoration-color: var(--accent); text-underline-offset: 4px; }
+  .r-when { margin: 0; color: var(--muted); font-size: 0.85rem; white-space: nowrap; }
+  .r-org { margin: 0.2rem 0 0.6rem; color: var(--muted); }
+  .r-job ul { margin: 0; padding-left: 1.1rem; max-width: 70ch; }
+  .r-job li { margin: 0.35rem 0; line-height: 1.55; }
+  .r-job li::marker { color: var(--accent); }
+  .r-job > p:last-child { margin: 0.4rem 0 0; max-width: 70ch; line-height: 1.55; }
+
+  .r-label { margin: 0 0 0.6rem; color: var(--muted); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.12em; }
+  .r-label:not(:first-child) { margin-top: 1.4rem; }
+  .r-tags { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .r-tags li { border: var(--rule); padding: 0.35rem 0.7rem; font-size: 0.9rem; }
+
+  .r-foot { margin: 2.5rem 0 0; }
+
+  @media (max-width: 760px) {
+    .r-sec { grid-template-columns: 1fr; gap: 1rem; }
+  }
+  @media (prefers-reduced-motion: reduce) { .r-dl { transition: none; } .r-dl:hover { transform: none; } }
 </style>
