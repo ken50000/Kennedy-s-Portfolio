@@ -72,64 +72,73 @@ const tools = ['Figma', 'Figma Make', 'Adobe Creative Suite', 'Miro', 'Jira', 'C
       )}
     </header>
 
-    <section class="r-sec" aria-labelledby="r-summary">
-      <h2 id="r-summary" class="mono">Summary</h2>
-      <div>
-        <p class="r-lede">UX designer who creates intuitive, visually polished experiences and simplifies complex workflows. I combine UI design, user-centered research, and rapid prototyping to turn complicated business problems into accessible solutions that make products easier to use.</p>
-      </div>
-    </section>
+    {/* The résumé as a paper scroll. It unrolls once on load (see the script below); the text is real and
+         readable the whole time, and without JavaScript or with reduced motion it simply shows, unrolled. */}
+    <div class="r-scroll" data-unroll>
+      <div class="r-rod r-rod-top" aria-hidden="true"><i></i></div>
+      <div class="r-paper">
+        <p class="r-paper-name">Kennedy Campbell</p>
+        <section class="r-sec" aria-labelledby="r-summary">
+          <h2 id="r-summary" class="mono">Summary</h2>
+          <div>
+            <p class="r-lede">UX designer who creates intuitive, visually polished experiences and simplifies complex workflows. I combine UI design, user-centered research, and rapid prototyping to turn complicated business problems into accessible solutions that make products easier to use.</p>
+          </div>
+        </section>
 
-    <section class="r-sec" aria-labelledby="r-exp">
-      <h2 id="r-exp" class="mono">Experience</h2>
-      <div>
-        {jobs.map((j) => (
-          <article class="r-job">
+        <section class="r-sec" aria-labelledby="r-exp">
+          <h2 id="r-exp" class="mono">Experience</h2>
+          <div>
+            {jobs.map((j) => (
+              <article class="r-job">
+                <div class="r-row">
+                  <h3>{j.title}</h3>
+                  <p class="mono r-when">{j.when}</p>
+                </div>
+                <p class="r-org">{j.org}{j.where && <span> · {j.where}</span>}</p>
+                <ul>{j.points.map((p) => <li>{p}</li>)}</ul>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <section class="r-sec" aria-labelledby="r-proj">
+          <h2 id="r-proj" class="mono">Projects</h2>
+          <div>
+            {projects.map((p) => (
+              <article class="r-job">
+                <div class="r-row">
+                  <h3><a href={url(p.href)}>{p.title}</a></h3>
+                  {p.when && <p class="mono r-when">{p.when}</p>}
+                </div>
+                <p>{p.text}</p>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <section class="r-sec" aria-labelledby="r-edu">
+          <h2 id="r-edu" class="mono">Education</h2>
+          <div>
             <div class="r-row">
-              <h3>{j.title}</h3>
-              <p class="mono r-when">{j.when}</p>
+              <h3>Michigan State University</h3>
+              <p class="mono r-when">May 2025</p>
             </div>
-            <p class="r-org">{j.org}{j.where && <span> · {j.where}</span>}</p>
-            <ul>{j.points.map((p) => <li>{p}</li>)}</ul>
-          </article>
-        ))}
-      </div>
-    </section>
+            <p class="r-org">Bachelor of Arts, Experience Architecture (Human-Computer Interaction)</p>
+          </div>
+        </section>
 
-    <section class="r-sec" aria-labelledby="r-proj">
-      <h2 id="r-proj" class="mono">Projects</h2>
-      <div>
-        {projects.map((p) => (
-          <article class="r-job">
-            <div class="r-row">
-              <h3><a href={url(p.href)}>{p.title}</a></h3>
-              {p.when && <p class="mono r-when">{p.when}</p>}
-            </div>
-            <p>{p.text}</p>
-          </article>
-        ))}
+        <section class="r-sec" aria-labelledby="r-skills">
+          <h2 id="r-skills" class="mono">Skills</h2>
+          <div>
+            <p class="mono r-label">Practice</p>
+            <ul class="r-tags">{practice.map((t) => <li>{t}</li>)}</ul>
+            <p class="mono r-label">Tools</p>
+            <ul class="r-tags">{tools.map((t) => <li>{t}</li>)}</ul>
+          </div>
+        </section>
       </div>
-    </section>
-
-    <section class="r-sec" aria-labelledby="r-edu">
-      <h2 id="r-edu" class="mono">Education</h2>
-      <div>
-        <div class="r-row">
-          <h3>Michigan State University</h3>
-          <p class="mono r-when">May 2025</p>
-        </div>
-        <p class="r-org">Bachelor of Arts, Experience Architecture (Human-Computer Interaction)</p>
-      </div>
-    </section>
-
-    <section class="r-sec" aria-labelledby="r-skills">
-      <h2 id="r-skills" class="mono">Skills</h2>
-      <div>
-        <p class="mono r-label">Practice</p>
-        <ul class="r-tags">{practice.map((t) => <li>{t}</li>)}</ul>
-        <p class="mono r-label">Tools</p>
-        <ul class="r-tags">{tools.map((t) => <li>{t}</li>)}</ul>
-      </div>
-    </section>
+      <div class="r-rod r-rod-bottom" aria-hidden="true"><i></i></div>
+    </div>
 
     {hasPdf && (
       <p class="r-foot">
@@ -137,7 +146,49 @@ const tools = ['Figma', 'Figma Make', 'Adobe Creative Suite', 'Miro', 'Jira', 'C
       </p>
     )}
   </div>
+  <script is:inline>
+    // Unroll the résumé scroll once. Any scroll, key, tap, or click finishes it at once, so nobody waits to read.
+    (() => {
+      const box = document.querySelector('[data-unroll]');
+      if (!box || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      const paper = box.querySelector('.r-paper');
+      const parts = [...paper.querySelectorAll('.r-paper-name, .r-sec > h2, .r-lede, .r-job, .r-sec > div > .r-row, .r-sec > div > .r-org, .r-label, .r-tags')];
+      parts.forEach((el) => el.classList.add('r-hidden'));
+      box.classList.add('is-rolling', 'is-starting');
+      const H = paper.offsetHeight;
+      const tops = parts.map((el) => el.offsetTop);
+      const dur = Math.max(1300, Math.min(2600, H * 0.6));
+      let t0 = 0, done = false;
+      const ease = (x) => 1 - Math.pow(1 - x, 3);
+      function set(open) {
+        box.style.setProperty('--open', open.toFixed(1) + 'px');
+        box.style.setProperty('--spin', (open * 0.9).toFixed(1) + 'px');
+        parts.forEach((el, i) => {
+          if (el.classList.contains('r-hidden') && tops[i] + 24 < open) { el.classList.add('r-shown'); el.classList.remove('r-hidden'); }
+        });
+      }
+      function finish() {
+        if (done) return;
+        done = true;
+        parts.forEach((el) => el.classList.remove('r-hidden'));
+        box.classList.remove('is-rolling', 'is-starting');
+        box.style.removeProperty('--open');
+        ['wheel', 'keydown', 'touchstart', 'pointerdown'].forEach((e) => removeEventListener(e, finish));
+      }
+      function frame(now) {
+        if (done) return;
+        if (!t0) t0 = now;
+        const x = Math.min(1, (now - t0) / dur);
+        set(H * ease(x));
+        x < 1 ? requestAnimationFrame(frame) : finish();
+      }
+      set(0);
+      ['wheel', 'keydown', 'touchstart', 'pointerdown'].forEach((e) => addEventListener(e, finish, { passive: true }));
+      setTimeout(() => requestAnimationFrame(frame), 450);
+    })();
+  </script>
 </Base>
+
 
 <style>
   .page { max-width: var(--wide); margin: 0 auto; padding: 3rem var(--gutter) 5rem; }
@@ -176,7 +227,57 @@ const tools = ['Figma', 'Figma Make', 'Adobe Creative Suite', 'Miro', 'Jira', 'C
   .r-tags { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0.5rem; }
   .r-tags li { border: var(--rule); padding: 0.35rem 0.7rem; font-size: 0.9rem; }
 
-  .r-foot { margin: 2.5rem 0 0; }
+  .r-foot { margin: 3.5rem 0 0; }
+  /* ---------- the paper scroll ---------- */
+  .r-scroll { position: relative; max-width: 1080px; margin: 3.5rem auto 0; perspective: 1400px; }
+  .r-paper {
+    --text: #151413; --muted: #57524b; --red-hot: #b5251e; --line: #151413; --line-soft: #ddd7cc;
+    position: relative; color: var(--text);
+    background:
+      radial-gradient(120% 60% at 50% 0%, rgb(255 255 255 / 0.55), transparent 60%),
+      repeating-linear-gradient(0deg, rgb(21 20 19 / 0.018) 0 2px, transparent 2px 5px),
+      #f6f2ea;
+    border: 2px solid #151413; border-top: 0; border-bottom: 0;
+    box-shadow: var(--shadow);
+    padding: clamp(1.75rem, 4vw, 3.25rem) clamp(1.25rem, 5vw, 4rem) clamp(2rem, 4vw, 3.5rem);
+  }
+  .r-paper-name { margin: 0 0 0.5rem; font-family: var(--font-display); font-weight: 800; letter-spacing: -0.04em;
+    font-size: clamp(1.9rem, 4.5vw, 3rem); line-height: 1; }
+  .r-paper .r-sec:last-child { border-bottom: 0; padding-bottom: 0; }
+  .r-paper .r-sec:first-of-type { border-top: 2px solid var(--line); margin-top: 1.25rem; }
+  .r-paper a { color: inherit; }
+  .r-paper .r-row h3 a { text-decoration-color: var(--red-hot); }
+  .r-paper .r-job li::marker { color: var(--red-hot); }
+
+  /* The rollers: dark cylinders with red end caps, a little wider than the paper. */
+  .r-rod { position: absolute; left: -22px; right: -22px; height: 26px; z-index: 2; border: 2px solid #151413;
+    background: linear-gradient(180deg, #4d4945 0%, #2a2724 30%, #151413 55%, #3a3632 80%, #1d1b19 100%); }
+  .r-rod::before, .r-rod::after { content: ''; position: absolute; top: -6px; bottom: -6px; width: 16px;
+    background: var(--grad-red); border: 2px solid #151413; }
+  .r-rod::before { left: -14px; } .r-rod::after { right: -14px; }
+  .r-rod i { position: absolute; inset: 0; opacity: 0.25;
+    background: repeating-linear-gradient(180deg, transparent 0 7px, rgb(250 248 243 / 0.5) 7px 8px); }
+  .r-rod-top { top: -14px; }
+  .r-rod-bottom { top: 100%; translate: 0 -12px; }
+
+  /* While unrolling (set by the script): the paper is clipped at the moving edge and the bottom roller rides it. */
+  .r-scroll.is-rolling .r-paper { clip-path: inset(0 -40px calc(100% - var(--open, 0px)) -40px); }
+  .r-scroll.is-rolling .r-rod-bottom { top: var(--open, 0px); }
+  .r-scroll.is-rolling .r-rod-bottom i { background-position: 0 var(--spin, 0px); }
+  .r-scroll.is-rolling .r-paper::after { content: ''; position: absolute; left: 0; right: 0; height: 70px;
+    top: calc(var(--open, 0px) - 70px); pointer-events: none;
+    background: linear-gradient(180deg, transparent, rgb(21 20 19 / 0.16)); }
+  .r-scroll.is-starting { animation: r-drop .55s cubic-bezier(.2,.8,.2,1) both; transform-origin: 50% 0; }
+  @keyframes r-drop { from { opacity: 0; transform: translateY(-24px) rotateX(-35deg); } to { opacity: 1; transform: none; } }
+  .r-paper .r-hidden { opacity: 0; translate: 0 14px; }
+  .r-paper .r-shown { transition: opacity .6s ease, translate .7s cubic-bezier(.2,.7,.2,1); }
+
+  @media (max-width: 760px) {
+    .r-rod { left: -10px; right: -10px; height: 20px; }
+    .r-rod::before, .r-rod::after { width: 10px; }
+    .r-rod::before { left: -9px; } .r-rod::after { right: -9px; }
+  }
+
 
   @media (max-width: 760px) {
     .r-sec { grid-template-columns: 1fr; gap: 1rem; }
