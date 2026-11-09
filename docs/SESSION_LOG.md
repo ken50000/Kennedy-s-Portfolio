@@ -4,6 +4,17 @@ Newest entry on top. Claude Code: read the latest entry at the start of every se
 
 ---
 
+## 2026-11-09 (later): Résumé and start date
+- Start date corrected: Kennedy chose "late summer 2024" (full-time right after the internship; month not
+  given). ReimburseMe case study, timeline ("2024 – present"), and About ("2024 – now") updated; the earlier
+  "July 2025" came from an example answer, not from her.
+- New one-page résumé at `public/resume.pdf` (source: `docs/resume-source.html`), rebuilt from her résumé to
+  match the site: no phone or street address (city only), told at her level. Removed: "lead end-to-end UX
+  strategy", "~45 min → ~30 s", "29K+ weekly users", the launch-video claim. Added her portfolio link,
+  Data Hub and Workforce Planning lines, and TexStyle and Fitness Bingo as projects.
+
+---
+
 ## 2026-11-09 (later): Her answers to the must-answer list
 **Changed**
 - Ani: cover credit "Cover illustration by Kyle Kelley." Workforce Planning: role UX Designer; Nacho OK'd showing
