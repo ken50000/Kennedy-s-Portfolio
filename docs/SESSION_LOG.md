@@ -4,6 +4,14 @@ Newest entry on top. Claude Code: read the latest entry at the start of every se
 
 ---
 
+## 2026-11-09: ReimburseMe timeline
+- Kennedy confirmed: summer 2024 Walmart internship (Intake Form), then joined ReimburseMe full-time as a UI
+  Designer in July 2025. Updated the locked case study, ReimburseMe's timeline (Jul 2025 – present), and the
+  About page (Jul 2025 – now). Removed the "confirm the story" note (order confirmed in her earlier answer).
+- About dates note narrowed to the accessibility internship and where Workforce Planning fits.
+
+---
+
 ## 2026-11-08: ReimburseMe answers
 - Locked ReimburseMe case study: added Kennedy's answers for the goal, the associate's side, collaboration, what
   shaped her flows (Missing Receipt Affidavit testing, 5 participants), and reflection. Re-locked, same passcode.
