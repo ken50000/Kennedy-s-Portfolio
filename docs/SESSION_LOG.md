@@ -4,6 +4,13 @@ Newest entry on top. Claude Code: read the latest entry at the start of every se
 
 ---
 
+## 2026-11-09: ReimburseMe program numbers left out
+- Kennedy let Claude decide on the $21M+ program figure. Decision: leave program numbers out of the case study
+  (unclear if it's savings or a projection, and whether it's OK to share). Removed the "program results" note.
+  They're still visible in her video behind the passcode.
+
+---
+
 ## 2026-11-09: ReimburseMe timeline
 - Kennedy confirmed: summer 2024 Walmart internship (Intake Form), then joined ReimburseMe full-time as a UI
   Designer in July 2025. Updated the locked case study, ReimburseMe's timeline (Jul 2025 – present), and the
